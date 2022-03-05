@@ -59,11 +59,11 @@ final class ErrorTest extends TestCase
 
         $this->assertException(
             Error::class,
-            fn() => $this->emptyError->orFail(),
+            fn () => $this->emptyError->orFail(),
         );
         $this->assertExceptionMessage(
             'Bilbo Bolsón',
-            fn() => $this->errorWithMessage->orFail(),
+            fn () => $this->errorWithMessage->orFail(),
         );
 
         $this->assertSame(
@@ -128,28 +128,28 @@ final class ErrorTest extends TestCase
     public function testBooleanOperationsWithArrowFunctions(): void
     {
         $this->assertTrue(
-            $this->emptyError->or(fn() => true)
+            $this->emptyError->or(fn () => true)
         );
         $this->assertTrue(
-            $this->errorWithMessage->or(fn() => true)
+            $this->errorWithMessage->or(fn () => true)
         );
 
         $this->assertSame(
             $this->ok,
-            $this->emptyError->orElse(fn() => $this->ok)
+            $this->emptyError->orElse(fn () => $this->ok)
         );
         $this->assertSame(
             $this->ok,
-            $this->errorWithMessage->orElse(fn() => $this->ok)
+            $this->errorWithMessage->orElse(fn () => $this->ok)
         );
 
         $this->assertSame(
             $this->emptyError,
-            $this->emptyError->andThen(fn() => $this->ok)
+            $this->emptyError->andThen(fn () => $this->ok)
         );
         $this->assertSame(
             $this->errorWithMessage,
-            $this->errorWithMessage->andThen(fn() => $this->ok)
+            $this->errorWithMessage->andThen(fn () => $this->ok)
         );
     }
 }

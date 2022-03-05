@@ -7,7 +7,7 @@ nbproject
 
 # Dependencies
 node_modules
-/vendor
+vendor
 
 # Tests
 .phpunit.result.cache
@@ -17,6 +17,7 @@ coverage
 *.env
 *.log
 *.zip
+.php-cs-fixer.cache
 .vagrant
 
 # Keep folders that are needed

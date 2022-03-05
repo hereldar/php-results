@@ -88,11 +88,11 @@ final class AggregateResultTest extends TestCase
         $this->assertNull($this->resultWithOks->orFail());
         $this->assertException(
             AggregateException::class,
-            fn() => $this->resultWithErrors->orFail(),
+            fn () => $this->resultWithErrors->orFail(),
         );
         $this->assertException(
             AggregateException::class,
-            fn() => $this->resultWithErrorsAndOks->orFail(),
+            fn () => $this->resultWithErrorsAndOks->orFail(),
         );
 
         $this->assertSame(
@@ -207,50 +207,50 @@ final class AggregateResultTest extends TestCase
     public function testBooleanOperationsWithArrowFunctions(): void
     {
         $this->assertNull(
-            $this->emptyResult->or(fn() => true)
+            $this->emptyResult->or(fn () => true)
         );
         $this->assertNull(
-            $this->resultWithOks->or(fn() => true)
+            $this->resultWithOks->or(fn () => true)
         );
         $this->assertTrue(
-            $this->resultWithErrors->or(fn() => true)
+            $this->resultWithErrors->or(fn () => true)
         );
         $this->assertTrue(
-            $this->resultWithErrorsAndOks->or(fn() => true)
+            $this->resultWithErrorsAndOks->or(fn () => true)
         );
 
         $this->assertSame(
             $this->emptyResult,
-            $this->emptyResult->orElse(fn() => $this->error)
+            $this->emptyResult->orElse(fn () => $this->error)
         );
         $this->assertSame(
             $this->resultWithOks,
-            $this->resultWithOks->orElse(fn() => $this->error)
+            $this->resultWithOks->orElse(fn () => $this->error)
         );
         $this->assertSame(
             $this->ok,
-            $this->resultWithErrors->orElse(fn() => $this->ok)
+            $this->resultWithErrors->orElse(fn () => $this->ok)
         );
         $this->assertSame(
             $this->ok,
-            $this->resultWithErrorsAndOks->orElse(fn() => $this->ok)
+            $this->resultWithErrorsAndOks->orElse(fn () => $this->ok)
         );
 
         $this->assertSame(
             $this->error,
-            $this->emptyResult->andThen(fn() => $this->error)
+            $this->emptyResult->andThen(fn () => $this->error)
         );
         $this->assertSame(
             $this->error,
-            $this->resultWithOks->andThen(fn() => $this->error)
+            $this->resultWithOks->andThen(fn () => $this->error)
         );
         $this->assertSame(
             $this->resultWithErrors,
-            $this->resultWithErrors->andThen(fn() => $this->ok)
+            $this->resultWithErrors->andThen(fn () => $this->ok)
         );
         $this->assertSame(
             $this->resultWithErrorsAndOks,
-            $this->resultWithErrorsAndOks->andThen(fn() => $this->ok)
+            $this->resultWithErrorsAndOks->andThen(fn () => $this->ok)
         );
     }
 

@@ -159,40 +159,40 @@ final class OkTest extends TestCase
     public function testBooleanOperationsWithArrowFunctions(): void
     {
         $this->assertNull(
-            $this->emptyOk->or(fn() => true)
+            $this->emptyOk->or(fn () => true)
         );
         $this->assertSame(
             42,
-            $this->okWithValue->or(fn() => true)
+            $this->okWithValue->or(fn () => true)
         );
         $this->assertNull(
-            $this->okWithMessage->or(fn() => true)
+            $this->okWithMessage->or(fn () => true)
         );
 
         $this->assertSame(
             $this->emptyOk,
-            $this->emptyOk->orElse(fn() => $this->error)
+            $this->emptyOk->orElse(fn () => $this->error)
         );
         $this->assertSame(
             $this->okWithValue,
-            $this->okWithValue->orElse(fn() => $this->error)
+            $this->okWithValue->orElse(fn () => $this->error)
         );
         $this->assertSame(
             $this->okWithMessage,
-            $this->okWithMessage->orElse(fn() => $this->error)
+            $this->okWithMessage->orElse(fn () => $this->error)
         );
 
         $this->assertSame(
             $this->error,
-            $this->emptyOk->andThen(fn() => $this->error)
+            $this->emptyOk->andThen(fn () => $this->error)
         );
         $this->assertSame(
             $this->error,
-            $this->okWithValue->andThen(fn() => $this->error)
+            $this->okWithValue->andThen(fn () => $this->error)
         );
         $this->assertSame(
             $this->error,
-            $this->okWithMessage->andThen(fn() => $this->error)
+            $this->okWithMessage->andThen(fn () => $this->error)
         );
     }
 }

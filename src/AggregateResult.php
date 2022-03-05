@@ -18,6 +18,8 @@ class AggregateResult extends AbstractResult implements IAggregateResult
     {
         $this->individualResults = $results;
         $this->isError = $this->isAnyResultAnError();
+
+        parent::__construct();
     }
 
     private function isAnyResultAnError(): bool

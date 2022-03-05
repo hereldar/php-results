@@ -44,12 +44,12 @@ class Ok implements IResult
         return ($this->value !== null);
     }
 
-    public final function isError(): bool
+    final public function isError(): bool
     {
         return false;
     }
 
-    public final function isOk(): bool
+    final public function isOk(): bool
     {
         return true;
     }

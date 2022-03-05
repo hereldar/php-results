@@ -9,8 +9,11 @@ use Hereldar\Results\Interfaces\IResult;
 
 abstract class AbstractResult implements IResult
 {
-    protected string $message = '';
-    protected mixed $value = null;
+    public function __construct(
+        protected readonly mixed $value = null,
+        protected readonly string $message = ''
+    ) {
+    }
 
     public function andThen(IResult|Closure $default): IResult
     {

@@ -36,17 +36,17 @@ class Error extends RuntimeException implements IResult
         return false;
     }
 
-    public final function isError(): bool
+    final public function isError(): bool
     {
         return true;
     }
 
-    public final function isOk(): bool
+    final public function isOk(): bool
     {
         return false;
     }
 
-    public final function message(): string
+    final public function message(): string
     {
         return $this->message;
     }
