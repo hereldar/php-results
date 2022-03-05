@@ -69,7 +69,7 @@ class Ok implements IResult
         return $this->value;
     }
 
-    public function orElse(IResult|Closure $default): IResult
+    public function orElse(IResult|Closure $default): static
     {
         return $this;
     }

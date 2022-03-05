@@ -21,7 +21,7 @@ class Error extends RuntimeException implements IResult
         return new static();
     }
 
-    public function andThen(IResult|Closure $default): IResult
+    public function andThen(IResult|Closure $default): static
     {
         return $this;
     }
@@ -81,7 +81,7 @@ class Error extends RuntimeException implements IResult
     /**
      * @throws static
      */
-    public function orFail(): mixed
+    public function orFail(): never
     {
         throw $this;
     }
