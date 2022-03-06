@@ -10,14 +10,13 @@ node_modules
 vendor
 
 # Tests
-.phpunit.result.cache
 coverage
 
 # Others
+*.cache
 *.env
 *.log
 *.zip
-.php-cs-fixer.cache
 .vagrant
 
 # Keep folders that are needed
