@@ -7,6 +7,9 @@ namespace Hereldar\Results\Tests;
 use Hereldar\Results\Error;
 use Hereldar\Results\Ok;
 
+/**
+ * @covers \Hereldar\Results\Ok
+ */
 final class OkTest extends TestCase
 {
     private Ok $emptyOk;

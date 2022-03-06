@@ -10,6 +10,11 @@ use Hereldar\Results\Error;
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Ok;
 
+/**
+ * @covers \Hereldar\Results\AbstractResult
+ * @covers \Hereldar\Results\AggregateException
+ * @covers \Hereldar\Results\AggregateResult
+ */
 final class AggregateResultTest extends TestCase
 {
     private Error $error;

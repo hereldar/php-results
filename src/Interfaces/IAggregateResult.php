@@ -25,8 +25,6 @@ interface IAggregateResult extends IResult
     /**
      * Returns `true` if the aggregate result does not contain any
      * individual results.
-     *
-     * @return bool
      */
     public function isEmpty(): bool;
 }

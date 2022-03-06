@@ -17,20 +17,9 @@ class AggregateResult extends AbstractResult implements IAggregateResult
     public function __construct(IResult ...$results)
     {
         $this->individualResults = $results;
-        $this->isError = $this->isAnyResultAnError();
+        $this->isError = $this->containsAnyError();
 
         parent::__construct();
-    }
-
-    private function isAnyResultAnError(): bool
-    {
-        foreach ($this->individualResults as $result) {
-            if ($result->isError()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static function empty(): static
@@ -91,5 +80,16 @@ class AggregateResult extends AbstractResult implements IAggregateResult
     protected function aggregateException(): IAggregateException
     {
         return new AggregateException($this->individualResults());
+    }
+
+    private function containsAnyError(): bool
+    {
+        foreach ($this->individualResults as $result) {
+            if ($result->isError()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
