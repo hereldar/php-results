@@ -7,6 +7,9 @@ namespace Hereldar\Results\Interfaces;
 use Closure;
 use RuntimeException;
 
+/**
+ * @template T
+ */
 interface IResult
 {
     /**
@@ -15,6 +18,12 @@ interface IResult
      *
      * **Note:** If `default` is a closure and the result is a
      * success, this method will call it and return its output.
+     *
+     * @template T2
+     *
+     * @param IResult<T2>|Closure(T):IResult<T2> $default
+     *
+     * @return IResult<T2>|$this
      */
     public function andThen(IResult|Closure $default): IResult;
 
@@ -50,12 +59,19 @@ interface IResult
      * **Note:** If `default` is a closure and the result is an error,
      * this method will call it and return the output.
      *
-     * @param mixed|Closure $default
+     * @template T2
+     *
+     * @param T2|Closure():T2 $default
+     *
+     * @return T|T2
      */
     public function or(mixed $default): mixed;
 
     /**
-     * Terminates execution of the script if the result is an error. Otherwise, returns the success value.
+     * Terminates execution of the script if the result is an error.
+     * Otherwise, returns the success value.
+     *
+     * @return T
      */
     public function orDie(int|string $status = null): mixed;
 
@@ -65,6 +81,12 @@ interface IResult
      *
      * **Note:** If `default` is a closure and the result is an error,
      * this method will call it and return its output.
+     *
+     * @template T2
+     *
+     * @param IResult<T2>|Closure():IResult<T2> $default
+     *
+     * @return $this|IResult<T2>
      */
     public function orElse(IResult|Closure $default): IResult;
 
@@ -73,6 +95,8 @@ interface IResult
      * returns the success value.
      *
      * @throws RuntimeException
+     *
+     * @return T
      */
     public function orFail(): mixed;
 
@@ -80,14 +104,14 @@ interface IResult
      * Returns `null` if the result is an error. Otherwise, returns
      * the success value.
      *
-     * @return mixed|null
+     * @return T|null
      */
     public function orNull(): mixed;
 
     /**
      * Returns the result's value, if any.
      *
-     * @return mixed|null
+     * @return T|null
      */
     public function value(): mixed;
 }

@@ -8,6 +8,9 @@ use Closure;
 use Hereldar\Results\Interfaces\IResult;
 use RuntimeException;
 
+/**
+ * @implements IResult<null>
+ */
 class Error extends RuntimeException implements IResult
 {
     public function __construct(
@@ -21,6 +24,9 @@ class Error extends RuntimeException implements IResult
         return new static();
     }
 
+    /**
+     * @return $this
+     */
     public function andThen(IResult|Closure $default): static
     {
         return $this;
@@ -51,6 +57,13 @@ class Error extends RuntimeException implements IResult
         return $this->message;
     }
 
+    /**
+     * @template T2
+     *
+     * @param T2|Closure():T2 $default
+     *
+     * @return T2
+     */
     public function or(mixed $default): mixed
     {
         if ($default instanceof Closure) {
@@ -69,6 +82,13 @@ class Error extends RuntimeException implements IResult
         }
     }
 
+    /**
+     * @template T2
+     *
+     * @param IResult<T2>|Closure():IResult<T2> $default
+     *
+     * @return IResult<T2>
+     */
     public function orElse(IResult|Closure $default): IResult
     {
         if ($default instanceof Closure) {

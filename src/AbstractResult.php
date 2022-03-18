@@ -6,15 +6,31 @@ namespace Hereldar\Results;
 
 use Closure;
 use Hereldar\Results\Interfaces\IResult;
+use RuntimeException;
 
+/**
+ * @template T
+ *
+ * @implements IResult<T>
+ */
 abstract class AbstractResult implements IResult
 {
+    /**
+     * @param T $value
+     */
     public function __construct(
         protected readonly mixed $value = null,
         protected readonly string $message = ''
     ) {
     }
 
+    /**
+     * @template T2
+     *
+     * @param IResult<T2>|Closure(T):IResult<T2> $default
+     *
+     * @return IResult<T2>|$this
+     */
     public function andThen(IResult|Closure $default): IResult
     {
         if ($this->isError()) {
@@ -47,6 +63,13 @@ abstract class AbstractResult implements IResult
         return $this->message;
     }
 
+    /**
+     * @template T2
+     *
+     * @param T2|Closure():T2 $default
+     *
+     * @return T|T2
+     */
     public function or(mixed $default): mixed
     {
         if ($this->isOk()) {
@@ -60,6 +83,9 @@ abstract class AbstractResult implements IResult
         return $default;
     }
 
+    /**
+     * @return T
+     */
     public function orDie(int|string $status = null): mixed
     {
         if ($this->isOk()) {
@@ -73,6 +99,13 @@ abstract class AbstractResult implements IResult
         }
     }
 
+    /**
+     * @template T2
+     *
+     * @param IResult<T2>|Closure():IResult<T2> $default
+     *
+     * @return $this|IResult<T2>
+     */
     public function orElse(IResult|Closure $default): IResult
     {
         if ($this->isOk()) {
@@ -86,8 +119,16 @@ abstract class AbstractResult implements IResult
         return $default;
     }
 
+    /**
+     * @throws RuntimeException
+     *
+     * @return T
+     */
     abstract public function orFail(): mixed;
 
+    /**
+     * @return T|null
+     */
     public function orNull(): mixed
     {
         if ($this->isOk()) {
@@ -97,6 +138,9 @@ abstract class AbstractResult implements IResult
         return null;
     }
 
+    /**
+     * @return T|null
+     */
     public function value(): mixed
     {
         return $this->value;

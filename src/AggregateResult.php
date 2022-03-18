@@ -8,6 +8,9 @@ use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Interfaces\IAggregateResult;
 use Hereldar\Results\Interfaces\IResult;
 
+/**
+ * @extends AbstractResult<null>
+ */
 class AggregateResult extends AbstractResult implements IAggregateResult
 {
     /** @var IResult[] */
