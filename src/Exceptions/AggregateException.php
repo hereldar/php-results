@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hereldar\Results;
+namespace Hereldar\Results\Exceptions;
 
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Interfaces\IResult;

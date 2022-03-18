@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Tests;
 
-use Hereldar\Results\AggregateException;
 use Hereldar\Results\AggregateResult;
 use Hereldar\Results\Error;
+use Hereldar\Results\Exceptions\AggregateException;
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Ok;
+use UnexpectedValueException;
 
 /**
  * @covers \Hereldar\Results\AbstractResult
- * @covers \Hereldar\Results\AggregateException
  * @covers \Hereldar\Results\AggregateResult
+ * @covers \Hereldar\Results\Exceptions\AggregateException
  */
 final class AggregateResultTest extends TestCase
 {
@@ -98,6 +99,17 @@ final class AggregateResultTest extends TestCase
         $this->assertException(
             AggregateException::class,
             fn () => $this->resultWithErrorsAndOks->orFail(),
+        );
+
+        $this->assertNull($this->emptyResult->orThrow(new UnexpectedValueException()));
+        $this->assertNull($this->resultWithOks->orThrow(new UnexpectedValueException()));
+        $this->assertException(
+            UnexpectedValueException::class,
+            fn () => $this->resultWithErrors->orThrow(new UnexpectedValueException()),
+        );
+        $this->assertExceptionMessage(
+            'The result was an error',
+            fn () => $this->resultWithErrorsAndOks->orThrow(new UnexpectedValueException('The result was an error')),
         );
 
         $this->assertSame(

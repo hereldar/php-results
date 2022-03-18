@@ -139,6 +139,24 @@ abstract class AbstractResult implements IResult
     }
 
     /**
+     * @template TException of RuntimeException
+     *
+     * @param TException $exception
+     *
+     * @throws TException
+     *
+     * @return T
+     */
+    public function orThrow(RuntimeException $exception): mixed
+    {
+        if ($this->isOk()) {
+            return null;
+        }
+
+        throw $exception;
+    }
+
+    /**
      * @return T|null
      */
     public function value(): mixed

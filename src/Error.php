@@ -106,11 +106,29 @@ class Error extends RuntimeException implements IResult
         throw $this;
     }
 
+    /**
+     * @return null
+     */
     public function orNull(): mixed
     {
         return null;
     }
 
+    /**
+     * @template TException of RuntimeException
+     *
+     * @param TException $exception
+     *
+     * @throws TException
+     */
+    public function orThrow(RuntimeException $exception): never
+    {
+        throw $exception;
+    }
+
+    /**
+     * @return null
+     */
     public function value(): mixed
     {
         return null;

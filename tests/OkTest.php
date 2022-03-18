@@ -6,6 +6,7 @@ namespace Hereldar\Results\Tests;
 
 use Hereldar\Results\Error;
 use Hereldar\Results\Ok;
+use UnexpectedValueException;
 
 /**
  * @covers \Hereldar\Results\Ok
@@ -73,6 +74,10 @@ final class OkTest extends TestCase
         $this->assertNull($this->emptyOk->orFail());
         $this->assertSame(42, $this->okWithValue->orFail());
         $this->assertNull($this->okWithMessage->orFail());
+
+        $this->assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
+        $this->assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
+        $this->assertNull($this->okWithMessage->orThrow(new UnexpectedValueException()));
 
         $this->assertSame(
             $this->emptyOk,

@@ -109,6 +109,20 @@ interface IResult
     public function orNull(): mixed;
 
     /**
+     * Throws the given exception if the result is an error.
+     * Otherwise, returns the success value.
+     *
+     * @template TException of RuntimeException
+     *
+     * @param TException $exception
+     *
+     * @throws TException
+     *
+     * @return T
+     */
+    public function orThrow(RuntimeException $exception): mixed;
+
+    /**
      * Returns the result's value, if any.
      *
      * @return T|null

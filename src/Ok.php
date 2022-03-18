@@ -6,6 +6,7 @@ namespace Hereldar\Results;
 
 use Closure;
 use Hereldar\Results\Interfaces\IResult;
+use RuntimeException;
 
 /**
  * @template T
@@ -118,6 +119,14 @@ class Ok implements IResult
      * @return T
      */
     public function orNull(): mixed
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return T
+     */
+    public function orThrow(RuntimeException $exception): mixed
     {
         return $this->value;
     }

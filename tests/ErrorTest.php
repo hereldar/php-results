@@ -6,6 +6,7 @@ namespace Hereldar\Results\Tests;
 
 use Hereldar\Results\Error;
 use Hereldar\Results\Ok;
+use UnexpectedValueException;
 
 /**
  * @covers \Hereldar\Results\Error
@@ -67,6 +68,15 @@ final class ErrorTest extends TestCase
         $this->assertExceptionMessage(
             'Bilbo Bolsón',
             fn () => $this->errorWithMessage->orFail(),
+        );
+
+        $this->assertException(
+            UnexpectedValueException::class,
+            fn () => $this->emptyError->orThrow(new UnexpectedValueException()),
+        );
+        $this->assertExceptionMessage(
+            'The result was an error',
+            fn () => $this->errorWithMessage->orThrow(new UnexpectedValueException('The result was an error')),
         );
 
         $this->assertSame(
