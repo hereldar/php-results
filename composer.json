@@ -1,7 +1,8 @@
 {
     "name": "hereldar/results",
     "type": "library",
-    "description": "...",
+    "description": "Allows to handle the results in the most convenient way.",
+    "keywords": ["result", "results", "result type", "hereldar"],
     "license": "MIT",
     "support": {
         "issues": "https://github.com/hereldar/php-results/issues",
