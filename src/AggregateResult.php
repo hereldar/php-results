@@ -21,7 +21,7 @@ class AggregateResult extends AbstractResult implements IAggregateResult
     public function __construct(IResult ...$results)
     {
         $this->individualResults = $results;
-        $this->isError = $this->containsAnyError();
+        $this->isError = (bool) $this->countIndividualErrors();
 
         parent::__construct();
     }
@@ -38,6 +38,8 @@ class AggregateResult extends AbstractResult implements IAggregateResult
 
     public function individualErrors(): array
     {
+        $this->used = true;
+
         $errors = [];
 
         foreach ($this->individualResults as $result) {
@@ -51,21 +53,29 @@ class AggregateResult extends AbstractResult implements IAggregateResult
 
     public function individualResults(): array
     {
+        $this->used = true;
+
         return $this->individualResults;
     }
 
     public function isEmpty(): bool
     {
+        $this->used = true;
+
         return !$this->individualResults;
     }
 
     public function isError(): bool
     {
+        $this->used = true;
+
         return $this->isError;
     }
 
     public function isOk(): bool
     {
+        $this->used = true;
+
         return !$this->isError;
     }
 
@@ -74,6 +84,8 @@ class AggregateResult extends AbstractResult implements IAggregateResult
      */
     public function orFail(): mixed
     {
+        $this->used = true;
+
         if ($this->isError()) {
             throw $this->aggregateException();
         }
@@ -86,14 +98,18 @@ class AggregateResult extends AbstractResult implements IAggregateResult
         return new AggregateException($this->individualResults());
     }
 
-    private function containsAnyError(): bool
+    private function countIndividualErrors(): int
     {
+        $count = 0;
+
+        // We could return after the first error, but this way we mark
+        // all individual results as used.
         foreach ($this->individualResults as $result) {
             if ($result->isError()) {
-                return true;
+                ++$count;
             }
         }
 
-        return false;
+        return $count;
     }
 }

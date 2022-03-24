@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
+use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use RuntimeException;
 
@@ -13,10 +14,22 @@ use RuntimeException;
  */
 class Error extends RuntimeException implements IResult
 {
+    protected bool $used = false;
+
     public function __construct(
         string $message = ''
     ) {
         parent::__construct($message);
+    }
+
+    public function __destruct()
+    {
+        if (!$this->used) {
+            $trace = $this->getTraceAsString();
+            $lines = array_slice(explode("\n", $trace), 0, 5);
+
+            throw new UnusedResult($this, implode("\n", $lines));
+        }
     }
 
     public static function empty(): static
@@ -29,31 +42,43 @@ class Error extends RuntimeException implements IResult
      */
     public function andThen(IResult|Closure $default): static
     {
+        $this->used = true;
+
         return $this;
     }
 
     public function hasMessage(): bool
     {
+        $this->used = true;
+
         return ($this->message !== '');
     }
 
     public function hasValue(): bool
     {
+        $this->used = true;
+
         return false;
     }
 
     final public function isError(): bool
     {
+        $this->used = true;
+
         return true;
     }
 
     final public function isOk(): bool
     {
+        $this->used = true;
+
         return false;
     }
 
     final public function message(): string
     {
+        $this->used = true;
+
         return $this->message;
     }
 
@@ -66,6 +91,8 @@ class Error extends RuntimeException implements IResult
      */
     public function or(mixed $default): mixed
     {
+        $this->used = true;
+
         if ($default instanceof Closure) {
             return $default();
         }
@@ -75,6 +102,8 @@ class Error extends RuntimeException implements IResult
 
     public function orDie(int|string $status = null): never
     {
+        $this->used = true;
+
         if (isset($status)) {
             exit($status);
         } else {
@@ -91,6 +120,8 @@ class Error extends RuntimeException implements IResult
      */
     public function orElse(IResult|Closure $default): IResult
     {
+        $this->used = true;
+
         if ($default instanceof Closure) {
             return $default();
         }
@@ -103,6 +134,8 @@ class Error extends RuntimeException implements IResult
      */
     public function orFail(): never
     {
+        $this->used = true;
+
         throw $this;
     }
 
@@ -111,6 +144,8 @@ class Error extends RuntimeException implements IResult
      */
     public function orNull(): mixed
     {
+        $this->used = true;
+
         return null;
     }
 
@@ -123,6 +158,8 @@ class Error extends RuntimeException implements IResult
      */
     public function orThrow(RuntimeException $exception): never
     {
+        $this->used = true;
+
         throw $exception;
     }
 
@@ -131,6 +168,8 @@ class Error extends RuntimeException implements IResult
      */
     public function value(): mixed
     {
+        $this->used = true;
+
         return null;
     }
 }

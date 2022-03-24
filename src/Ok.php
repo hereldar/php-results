@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
+use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use RuntimeException;
 
@@ -15,6 +16,9 @@ use RuntimeException;
  */
 class Ok implements IResult
 {
+    protected bool $used = false;
+    private string $trace;
+
     /**
      * @param T $value
      */
@@ -22,6 +26,17 @@ class Ok implements IResult
         protected readonly mixed $value = null,
         protected readonly string $message = '',
     ) {
+        ob_start();
+        debug_print_backtrace(limit: 5);
+        $this->trace = ob_get_contents();
+        ob_end_clean();
+    }
+
+    public function __destruct()
+    {
+        if (!$this->used) {
+            throw new UnusedResult($this, $this->trace);
+        }
     }
 
     /**
@@ -51,6 +66,8 @@ class Ok implements IResult
      */
     public function andThen(IResult|Closure $default): IResult
     {
+        $this->used = true;
+
         if ($default instanceof Closure) {
             return $default($this->value());
         }
@@ -60,26 +77,36 @@ class Ok implements IResult
 
     public function hasMessage(): bool
     {
+        $this->used = true;
+
         return ($this->message !== '');
     }
 
     public function hasValue(): bool
     {
+        $this->used = true;
+
         return ($this->value !== null);
     }
 
     final public function isError(): bool
     {
+        $this->used = true;
+
         return false;
     }
 
     final public function isOk(): bool
     {
+        $this->used = true;
+
         return true;
     }
 
     public function message(): string
     {
+        $this->used = true;
+
         return $this->message;
     }
 
@@ -88,6 +115,8 @@ class Ok implements IResult
      */
     public function or(mixed $default): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 
@@ -96,6 +125,8 @@ class Ok implements IResult
      */
     public function orDie(int|string $status = null): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 
@@ -104,6 +135,8 @@ class Ok implements IResult
      */
     public function orElse(IResult|Closure $default): static
     {
+        $this->used = true;
+
         return $this;
     }
 
@@ -112,6 +145,8 @@ class Ok implements IResult
      */
     public function orFail(): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 
@@ -120,6 +155,8 @@ class Ok implements IResult
      */
     public function orNull(): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 
@@ -128,6 +165,8 @@ class Ok implements IResult
      */
     public function orThrow(RuntimeException $exception): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 
@@ -136,6 +175,8 @@ class Ok implements IResult
      */
     public function value(): mixed
     {
+        $this->used = true;
+
         return $this->value;
     }
 }

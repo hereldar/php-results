@@ -7,6 +7,7 @@ namespace Hereldar\Results\Tests;
 use Hereldar\Results\AggregateResult;
 use Hereldar\Results\Error;
 use Hereldar\Results\Exceptions\AggregateException;
+use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Ok;
 use UnexpectedValueException;
@@ -37,6 +38,20 @@ final class AggregateResultTest extends TestCase
         $this->resultWithOks = AggregateResult::of(Ok::empty(), Ok::empty());
         $this->resultWithErrors = AggregateResult::of(Error::empty(), Error::empty());
         $this->resultWithErrorsAndOks = new AggregateResult(Error::empty(), Ok::empty());
+    }
+
+    public function tearDown(): void
+    {
+        // We make sure that all results have been used before
+        // destroying them.
+
+        $this->error->value();
+        $this->ok->value();
+
+        $this->emptyResult->value();
+        $this->resultWithOks->value();
+        $this->resultWithErrors->value();
+        $this->resultWithErrorsAndOks->value();
     }
 
     public function testResultType(): void
@@ -306,5 +321,23 @@ final class AggregateResultTest extends TestCase
 
         $this->assertCount(2, $exceptionWithErrors->getErrors());
         $this->assertCount(1, $exceptionWithErrorsAndOks->getErrors());
+    }
+
+    public function testUnusedException(): void
+    {
+        $this->assertException(
+            UnusedResult::class,
+            function () {
+                $result = new AggregateResult();
+                unset($result);
+            }
+        );
+
+        $this->assertException(
+            UnusedResult::class,
+            function () {
+                AggregateResult::empty();
+            }
+        );
     }
 }
