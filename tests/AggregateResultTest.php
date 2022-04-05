@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Tests;
 
+use Exception;
 use Hereldar\Results\AggregateResult;
 use Hereldar\Results\Error;
 use Hereldar\Results\Exceptions\AggregateException;
@@ -35,9 +36,9 @@ final class AggregateResultTest extends TestCase
         $this->ok = new Ok();
 
         $this->emptyResult = AggregateResult::empty();
-        $this->resultWithOks = AggregateResult::of(Ok::empty(), Ok::empty());
-        $this->resultWithErrors = AggregateResult::of(Error::empty(), Error::empty());
-        $this->resultWithErrorsAndOks = new AggregateResult(Error::empty(), Ok::empty());
+        $this->resultWithOks = AggregateResult::of(new Ok(), new Ok());
+        $this->resultWithErrors = AggregateResult::of(new Error(), new Error());
+        $this->resultWithErrorsAndOks = AggregateResult::of(new Error(), new Ok());
     }
 
     public function tearDown(): void
@@ -65,6 +66,19 @@ final class AggregateResultTest extends TestCase
         $this->assertTrue($this->resultWithOks->isOk());
         $this->assertFalse($this->resultWithErrors->isOk());
         $this->assertFalse($this->resultWithErrorsAndOks->isOk());
+    }
+
+    public function testResultException(): void
+    {
+        $this->assertFalse($this->emptyResult->hasException());
+        $this->assertFalse($this->resultWithOks->hasException());
+        $this->assertTrue($this->resultWithErrors->hasException());
+        $this->assertTrue($this->resultWithErrorsAndOks->hasException());
+
+        $this->assertNull($this->emptyResult->exception());
+        $this->assertNull($this->resultWithOks->exception());
+        $this->assertInstanceOf(AggregateException::class, $this->resultWithErrors->exception());
+        $this->assertInstanceOf(AggregateException::class, $this->resultWithErrorsAndOks->exception());
     }
 
     public function testResultMessage(): void
@@ -330,6 +344,8 @@ final class AggregateResultTest extends TestCase
             function () {
                 $result = new AggregateResult();
                 unset($result);
+
+                throw new Exception();
             }
         );
 

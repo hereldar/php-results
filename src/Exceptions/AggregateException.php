@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Exceptions;
 
+use Exception;
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Interfaces\IResult;
-use RuntimeException;
 
-class AggregateException extends RuntimeException implements IAggregateException
+class AggregateException extends Exception implements IAggregateException
 {
     /**
      * @param IResult[] $results

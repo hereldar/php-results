@@ -10,7 +10,7 @@ use Hereldar\Results\Interfaces\IAggregateResult;
 use Hereldar\Results\Interfaces\IResult;
 
 /**
- * @extends AbstractResult<null>
+ * @extends AbstractResult<null, AggregateException>
  */
 class AggregateResult extends AbstractResult implements IAggregateResult
 {
@@ -23,7 +23,9 @@ class AggregateResult extends AbstractResult implements IAggregateResult
         $this->individualResults = $results;
         $this->isError = (bool) $this->countIndividualErrors();
 
-        parent::__construct();
+        parent::__construct(
+            exception: ($this->isError) ? $this->aggregateException() : null,
+        );
     }
 
     public static function empty(): static
@@ -79,21 +81,7 @@ class AggregateResult extends AbstractResult implements IAggregateResult
         return !$this->isError;
     }
 
-    /**
-     * @throws IAggregateException
-     */
-    public function orFail(): mixed
-    {
-        $this->used = true;
-
-        if ($this->isError()) {
-            throw $this->aggregateException();
-        }
-
-        return null;
-    }
-
-    protected function aggregateException(): IAggregateException
+    private function aggregateException(): IAggregateException
     {
         return new AggregateException($this->individualResults());
     }

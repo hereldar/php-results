@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Tests;
 
+use Exception;
 use Hereldar\Results\Error;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
@@ -16,7 +17,6 @@ final class OkTest extends TestCase
 {
     private Ok $emptyOk;
     private Ok $okWithValue;
-    private Ok $okWithMessage;
     private Error $error;
 
     public function setUp(): void
@@ -24,8 +24,7 @@ final class OkTest extends TestCase
         parent::setUp();
 
         $this->emptyOk = Ok::empty();
-        $this->okWithValue = Ok::of(42);
-        $this->okWithMessage = new Ok(message: 'Bilbo Bolsón');
+        $this->okWithValue = Ok::withValue(42);
         $this->error = new Error();
     }
 
@@ -36,7 +35,6 @@ final class OkTest extends TestCase
 
         $this->emptyOk->value();
         $this->okWithValue->value();
-        $this->okWithMessage->value();
         $this->error->value();
     }
 
@@ -44,52 +42,51 @@ final class OkTest extends TestCase
     {
         $this->assertFalse($this->emptyOk->isError());
         $this->assertFalse($this->okWithValue->isError());
-        $this->assertFalse($this->okWithMessage->isError());
 
         $this->assertTrue($this->emptyOk->isOk());
         $this->assertTrue($this->okWithValue->isOk());
-        $this->assertTrue($this->okWithMessage->isOk());
+    }
+
+    public function testResultException(): void
+    {
+        $this->assertFalse($this->emptyOk->hasException());
+        $this->assertFalse($this->okWithValue->hasException());
+
+        $this->assertNull($this->emptyOk->exception());
+        $this->assertNull($this->okWithValue->exception());
     }
 
     public function testResultMessage(): void
     {
         $this->assertFalse($this->emptyOk->hasMessage());
         $this->assertFalse($this->okWithValue->hasMessage());
-        $this->assertTrue($this->okWithMessage->hasMessage());
 
         $this->assertSame('', $this->emptyOk->message());
         $this->assertSame('', $this->okWithValue->message());
-        $this->assertSame('Bilbo Bolsón', $this->okWithMessage->message());
     }
 
     public function testResultValue(): void
     {
         $this->assertFalse($this->emptyOk->hasValue());
         $this->assertTrue($this->okWithValue->hasValue());
-        $this->assertFalse($this->okWithMessage->hasValue());
 
         $this->assertNull($this->emptyOk->value());
         $this->assertSame(42, $this->okWithValue->value());
-        $this->assertNull($this->okWithMessage->value());
     }
 
     public function testBooleanOperations(): void
     {
         $this->assertNull($this->emptyOk->or(true));
         $this->assertSame(42, $this->okWithValue->or(true));
-        $this->assertNull($this->okWithMessage->or(true));
 
         $this->assertNull($this->emptyOk->orNull());
         $this->assertSame(42, $this->okWithValue->orNull());
-        $this->assertNull($this->okWithMessage->orNull());
 
         $this->assertNull($this->emptyOk->orFail());
         $this->assertSame(42, $this->okWithValue->orFail());
-        $this->assertNull($this->okWithMessage->orFail());
 
         $this->assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
         $this->assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
-        $this->assertNull($this->okWithMessage->orThrow(new UnexpectedValueException()));
 
         $this->assertSame(
             $this->emptyOk,
@@ -99,10 +96,6 @@ final class OkTest extends TestCase
             $this->okWithValue,
             $this->okWithValue->orElse($this->error)
         );
-        $this->assertSame(
-            $this->okWithMessage,
-            $this->okWithMessage->orElse($this->error)
-        );
 
         $this->assertSame(
             $this->error,
@@ -111,10 +104,6 @@ final class OkTest extends TestCase
         $this->assertSame(
             $this->error,
             $this->okWithValue->andThen($this->error)
-        );
-        $this->assertSame(
-            $this->error,
-            $this->okWithMessage->andThen($this->error)
         );
     }
 
@@ -131,11 +120,6 @@ final class OkTest extends TestCase
                 return true;
             })
         );
-        $this->assertNull(
-            $this->okWithMessage->or(function () {
-                return true;
-            })
-        );
 
         $this->assertSame(
             $this->emptyOk,
@@ -146,12 +130,6 @@ final class OkTest extends TestCase
         $this->assertSame(
             $this->okWithValue,
             $this->okWithValue->orElse(function () {
-                return $this->error;
-            })
-        );
-        $this->assertSame(
-            $this->okWithMessage,
-            $this->okWithMessage->orElse(function () {
                 return $this->error;
             })
         );
@@ -168,12 +146,6 @@ final class OkTest extends TestCase
                 return $this->error;
             })
         );
-        $this->assertSame(
-            $this->error,
-            $this->okWithMessage->andThen(function () {
-                return $this->error;
-            })
-        );
     }
 
     public function testBooleanOperationsWithArrowFunctions(): void
@@ -185,9 +157,6 @@ final class OkTest extends TestCase
             42,
             $this->okWithValue->or(fn () => true)
         );
-        $this->assertNull(
-            $this->okWithMessage->or(fn () => true)
-        );
 
         $this->assertSame(
             $this->emptyOk,
@@ -196,10 +165,6 @@ final class OkTest extends TestCase
         $this->assertSame(
             $this->okWithValue,
             $this->okWithValue->orElse(fn () => $this->error)
-        );
-        $this->assertSame(
-            $this->okWithMessage,
-            $this->okWithMessage->orElse(fn () => $this->error)
         );
 
         $this->assertSame(
@@ -210,10 +175,6 @@ final class OkTest extends TestCase
             $this->error,
             $this->okWithValue->andThen(fn () => $this->error)
         );
-        $this->assertSame(
-            $this->error,
-            $this->okWithMessage->andThen(fn () => $this->error)
-        );
     }
 
     public function testUnusedException(): void
@@ -223,6 +184,8 @@ final class OkTest extends TestCase
             function () {
                 $result = new Ok();
                 unset($result);
+
+                throw new Exception();
             }
         );
 

@@ -5,27 +5,41 @@ declare(strict_types=1);
 namespace Hereldar\Results\Interfaces;
 
 use Closure;
-use RuntimeException;
+use Throwable;
 
 /**
  * @template T
+ * @template E of Throwable
  */
 interface IResult
 {
     /**
-     * Returns `default` if the result is a success. Otherwise,
-     * returns the error result.
+     * Returns the given `result` if this instance is a success.
+     * Otherwise, returns this error instance.
      *
-     * **Note:** If `default` is a closure and the result is a
-     * success, this method will call it and return its output.
+     * **Note:** If the given `result` is a closure and this instance
+     * is a success, this method will call it and return its output.
      *
-     * @template T2
+     * @template U
+     * @template F of Throwable
      *
-     * @param IResult<T2>|Closure(T):IResult<T2> $default
+     * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
-     * @return IResult<T2>|$this
+     * @return IResult<U, E|F>
      */
-    public function andThen(IResult|Closure $default): IResult;
+    public function andThen(IResult|Closure $result): IResult;
+
+    /**
+     * Returns the result's exception, if any.
+     *
+     * @return E|null
+     */
+    public function exception(): ?Throwable;
+
+    /**
+     * Returns `true` if the result includes an exception.
+     */
+    public function hasException(): bool;
 
     /**
      * Returns `true` if the result provides a message.
@@ -53,19 +67,19 @@ interface IResult
     public function message(): string;
 
     /**
-     * Returns `default` if the result is an error. Otherwise,
-     * returns the success value.
+     * Returns `value` if the result is an error. Otherwise, returns
+     * the success value.
      *
-     * **Note:** If `default` is a closure and the result is an error,
+     * **Note:** If `value` is a closure and the result is an error,
      * this method will call it and return the output.
      *
-     * @template T2
+     * @template U
      *
-     * @param T2|Closure():T2 $default
+     * @param U|Closure():U $value
      *
-     * @return T|T2
+     * @return T|U
      */
-    public function or(mixed $default): mixed;
+    public function or(mixed $value): mixed;
 
     /**
      * Terminates execution of the script if the result is an error.
@@ -76,25 +90,26 @@ interface IResult
     public function orDie(int|string $status = null): mixed;
 
     /**
-     * Returns `default` if the result is an error. Otherwise, returns
-     * the success result.
+     * Returns the given `result` if this instance is an error.
+     * Otherwise, returns this success instance.
      *
-     * **Note:** If `default` is a closure and the result is an error,
-     * this method will call it and return its output.
+     * **Note:** If the given `result` is a closure and this instance
+     * is an error, this method will call it and return its output.
      *
-     * @template T2
+     * @template U
+     * @template F of Throwable
      *
-     * @param IResult<T2>|Closure():IResult<T2> $default
+     * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
-     * @return $this|IResult<T2>
+     * @return IResult<T|U, F>
      */
-    public function orElse(IResult|Closure $default): IResult;
+    public function orElse(IResult|Closure $result): IResult;
 
     /**
      * Throws an exception if the result is an error. Otherwise,
      * returns the success value.
      *
-     * @throws RuntimeException
+     * @throws E
      *
      * @return T
      */
@@ -112,15 +127,18 @@ interface IResult
      * Throws the given exception if the result is an error.
      * Otherwise, returns the success value.
      *
-     * @template TException of RuntimeException
+     * **Note:** If `exception` is a closure and the result is an
+     * error, this method will call it and throw the output.
      *
-     * @param TException $exception
+     * @template F of Throwable
      *
-     * @throws TException
+     * @param F|Closure():F $exception
+     *
+     * @throws F
      *
      * @return T
      */
-    public function orThrow(RuntimeException $exception): mixed;
+    public function orThrow(Throwable $exception): mixed;
 
     /**
      * Returns the result's value, if any.

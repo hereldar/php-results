@@ -5,68 +5,39 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
+use Exception;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
-use RuntimeException;
 use Throwable;
 
 /**
- * @template E of Throwable
- *
- * @implements IResult<null, E>
+ * @implements IResult<null, Exception>
  */
-class Error implements IResult
+abstract class AbstractThrowableError extends Exception implements IResult
 {
     protected bool $used = false;
-    private readonly Throwable $exception;
-    private readonly string $trace;
 
-    /**
-     * @param E $exception
-     */
     public function __construct(
-        Throwable|string $exception = ''
+        string $message = ''
     ) {
-        ob_start();
-        debug_print_backtrace(limit: 5);
-        $this->trace = ob_get_contents();
-        ob_end_clean();
-
-        $this->exception = (is_string($exception))
-            ? new RuntimeException($exception)
-            : $exception;
+        parent::__construct($message);
     }
 
     public function __destruct()
     {
         if (!$this->used) {
-            throw new UnusedResult($this, $this->trace);
+            $trace = $this->getTraceAsString();
+            $lines = array_slice(explode("\n", $trace), 0, 5);
+
+            throw new UnusedResult($this, implode("\n", $lines));
         }
     }
 
-    /**
-     * @return static<RuntimeException>
-     */
     public static function empty(): static
     {
         return new static();
     }
 
-    /**
-     * @template F of Throwable
-     *
-     * @param F $exception
-     *
-     * @return static<F>
-     */
-    public static function fromException(Throwable $exception): static
-    {
-        return new static($exception);
-    }
-
-    /**
-     * @return static<RuntimeException>
-     */
     public static function withMessage(string $message): static
     {
         return new static($message);
@@ -87,14 +58,11 @@ class Error implements IResult
         return $this;
     }
 
-    /**
-     * @return E
-     */
-    final public function exception(): Throwable
+    final public function exception(): static
     {
         $this->used = true;
 
-        return $this->exception;
+        return $this;
     }
 
     final public function hasException(): bool
@@ -108,7 +76,7 @@ class Error implements IResult
     {
         $this->used = true;
 
-        return ($this->exception->getMessage() !== '');
+        return ($this->message !== '');
     }
 
     final public function hasValue(): bool
@@ -136,7 +104,7 @@ class Error implements IResult
     {
         $this->used = true;
 
-        return $this->exception->getMessage();
+        return $this->message;
     }
 
     /**
@@ -188,13 +156,13 @@ class Error implements IResult
     }
 
     /**
-     * @throws E
+     * @throws static
      */
     final public function orFail(): never
     {
         $this->used = true;
 
-        throw $this->exception;
+        throw $this;
     }
 
     final public function orNull(): mixed

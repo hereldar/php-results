@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Hereldar\Results\Exceptions;
 
 use Hereldar\Results\Interfaces\IResult;
-use RuntimeException;
+use LogicException;
 
-final class UnusedResult extends RuntimeException
+final class UnusedResult extends LogicException
 {
     private const SHORT_MESSAGE = 'Unused `%s` that must be used';
     private const LONG_MESSAGE = "Unused `%s` that must be used\n%s";

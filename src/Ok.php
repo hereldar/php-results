@@ -7,24 +7,23 @@ namespace Hereldar\Results;
 use Closure;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
-use RuntimeException;
+use Throwable;
 
 /**
  * @template T
  *
- * @implements IResult<T>
+ * @implements IResult<T, null>
  */
 class Ok implements IResult
 {
     protected bool $used = false;
-    private string $trace;
+    private readonly string $trace;
 
     /**
      * @param T $value
      */
     public function __construct(
         protected readonly mixed $value = null,
-        protected readonly string $message = '',
     ) {
         ob_start();
         debug_print_backtrace(limit: 5);
@@ -48,41 +47,58 @@ class Ok implements IResult
     }
 
     /**
-     * @param T $value
+     * @template U
      *
-     * @return static<T>
+     * @param U $value
+     *
+     * @return static<U>
      */
-    public static function of(mixed $value): static
+    public static function withValue(mixed $value): static
     {
         return new static($value);
     }
 
     /**
-     * @template T2
+     * @template U
+     * @template F of Throwable
      *
-     * @param IResult<T2>|Closure(T):IResult<T2> $default
+     * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
-     * @return IResult<T2>
+     * @return IResult<U, F>
      */
-    public function andThen(IResult|Closure $default): IResult
+    final public function andThen(IResult|Closure $result): IResult
     {
         $this->used = true;
 
-        if ($default instanceof Closure) {
-            return $default($this->value());
+        if ($result instanceof Closure) {
+            return $result($this->value());
         }
 
-        return $default;
+        return $result;
     }
 
-    public function hasMessage(): bool
+    final public function exception(): ?Throwable
     {
         $this->used = true;
 
-        return ($this->message !== '');
+        return null;
     }
 
-    public function hasValue(): bool
+    final public function hasMessage(): bool
+    {
+        $this->used = true;
+
+        return false;
+    }
+
+    final public function hasException(): bool
+    {
+        $this->used = true;
+
+        return false;
+    }
+
+    final public function hasValue(): bool
     {
         $this->used = true;
 
@@ -103,17 +119,21 @@ class Ok implements IResult
         return true;
     }
 
-    public function message(): string
+    final public function message(): string
     {
         $this->used = true;
 
-        return $this->message;
+        return '';
     }
 
     /**
+     * @template U
+     *
+     * @param U|Closure():U $value
+     *
      * @return T
      */
-    public function or(mixed $default): mixed
+    final public function or(mixed $value): mixed
     {
         $this->used = true;
 
@@ -123,7 +143,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    public function orDie(int|string $status = null): mixed
+    final public function orDie(int|string $status = null): mixed
     {
         $this->used = true;
 
@@ -131,9 +151,14 @@ class Ok implements IResult
     }
 
     /**
+     * @template U
+     * @template F of Throwable
+     *
+     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     *
      * @return $this
      */
-    public function orElse(IResult|Closure $default): static
+    final public function orElse(IResult|Closure $result): static
     {
         $this->used = true;
 
@@ -143,7 +168,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    public function orFail(): mixed
+    final public function orFail(): mixed
     {
         $this->used = true;
 
@@ -153,7 +178,21 @@ class Ok implements IResult
     /**
      * @return T
      */
-    public function orNull(): mixed
+    final public function orNull(): mixed
+    {
+        $this->used = true;
+
+        return $this->value;
+    }
+
+    /**
+     * @template F of Throwable
+     *
+     * @param F|Closure():F $exception
+     *
+     * @return T
+     */
+    final public function orThrow(Throwable $exception): mixed
     {
         $this->used = true;
 
@@ -163,17 +202,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    public function orThrow(RuntimeException $exception): mixed
-    {
-        $this->used = true;
-
-        return $this->value;
-    }
-
-    /**
-     * @return T
-     */
-    public function value(): mixed
+    final public function value(): mixed
     {
         $this->used = true;
 

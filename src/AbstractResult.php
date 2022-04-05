@@ -8,28 +8,36 @@ use Closure;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use RuntimeException;
+use Throwable;
 
 /**
  * @template T
+ * @template E of Throwable
  *
- * @implements IResult<T>
+ * @implements IResult<T, E>
  */
 abstract class AbstractResult implements IResult
 {
     protected bool $used = false;
-    private string $trace;
+    protected readonly ?Throwable $exception;
+    private readonly string $trace;
 
     /**
      * @param T $value
+     * @param E|string $exception
      */
     public function __construct(
         protected readonly mixed $value = null,
-        protected readonly string $message = ''
+        Throwable|string $exception = null
     ) {
         ob_start();
         debug_print_backtrace(limit: 5);
         $this->trace = ob_get_contents();
         ob_end_clean();
+
+        $this->exception = (is_string($exception))
+            ? new RuntimeException($exception)
+            : $exception;
     }
 
     public function __destruct()
@@ -40,32 +48,46 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @template T2
+     * @template U
+     * @template F of Throwable
      *
-     * @param IResult<T2>|Closure(T):IResult<T2> $default
+     * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
-     * @return IResult<T2>|$this
+     * @return IResult<U, E|F>
      */
-    public function andThen(IResult|Closure $default): IResult
+    public function andThen(IResult|Closure $result): IResult
     {
-        $this->used = true;
-
         if ($this->isError()) {
             return $this;
         }
 
-        if ($default instanceof Closure) {
-            return $default($this->value());
+        if ($result instanceof Closure) {
+            return $result($this->value());
         }
 
-        return $default;
+        return $result;
+    }
+
+    /**
+     * @return E|null
+     */
+    public function exception(): ?Throwable
+    {
+        $this->used = true;
+
+        return $this->exception;
+    }
+
+    public function hasException(): bool
+    {
+        $this->used = true;
+
+        return isset($this->exception);
     }
 
     public function hasMessage(): bool
     {
-        $this->used = true;
-
-        return ($this->message !== '');
+        return ($this->message() !== '');
     }
 
     public function hasValue(): bool
@@ -83,29 +105,31 @@ abstract class AbstractResult implements IResult
     {
         $this->used = true;
 
-        return $this->message;
+        if (!isset($this->exception)) {
+            return '';
+        }
+
+        return $this->exception->getMessage();
     }
 
     /**
-     * @template T2
+     * @template U
      *
-     * @param T2|Closure():T2 $default
+     * @param U|Closure():U $value
      *
-     * @return T|T2
+     * @return T|U
      */
-    public function or(mixed $default): mixed
+    public function or(mixed $value): mixed
     {
-        $this->used = true;
-
         if ($this->isOk()) {
             return $this->value;
         }
 
-        if ($default instanceof Closure) {
-            return $default();
+        if ($value instanceof Closure) {
+            return $value();
         }
 
-        return $default;
+        return $value;
     }
 
     /**
@@ -113,10 +137,8 @@ abstract class AbstractResult implements IResult
      */
     public function orDie(int|string $status = null): mixed
     {
-        $this->used = true;
-
         if ($this->isOk()) {
-            return null;
+            return $this->value;
         }
 
         if (isset($status)) {
@@ -127,41 +149,45 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @template T2
+     * @template U
+     * @template F of Throwable
      *
-     * @param IResult<T2>|Closure():IResult<T2> $default
+     * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
-     * @return $this|IResult<T2>
+     * @return IResult<T|U, F>
      */
-    public function orElse(IResult|Closure $default): IResult
+    public function orElse(IResult|Closure $result): IResult
     {
-        $this->used = true;
-
         if ($this->isOk()) {
             return $this;
         }
 
-        if ($default instanceof Closure) {
-            return $default();
+        if ($result instanceof Closure) {
+            return $result();
         }
 
-        return $default;
+        return $result;
     }
 
     /**
-     * @throws RuntimeException
+     * @throws E
      *
      * @return T
      */
-    abstract public function orFail(): mixed;
+    public function orFail(): mixed
+    {
+        if ($this->isOk()) {
+            return $this->value;
+        }
+
+        throw $this->exception;
+    }
 
     /**
      * @return T|null
      */
     public function orNull(): mixed
     {
-        $this->used = true;
-
         if ($this->isOk()) {
             return $this->value;
         }
@@ -170,20 +196,18 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @template TException of RuntimeException
+     * @template F of Throwable
      *
-     * @param TException $exception
+     * @param F|Closure():F $exception
      *
-     * @throws TException
+     * @throws F
      *
      * @return T
      */
-    public function orThrow(RuntimeException $exception): mixed
+    public function orThrow(Throwable $exception): mixed
     {
-        $this->used = true;
-
         if ($this->isOk()) {
-            return null;
+            return $this->value;
         }
 
         throw $exception;
