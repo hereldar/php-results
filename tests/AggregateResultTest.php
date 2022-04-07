@@ -32,13 +32,13 @@ final class AggregateResultTest extends TestCase
     {
         parent::setUp();
 
-        $this->error = new Error();
-        $this->ok = new Ok();
+        $this->error = Error::empty();
+        $this->ok = Ok::empty();
 
         $this->emptyResult = AggregateResult::empty();
-        $this->resultWithOks = AggregateResult::of(new Ok(), new Ok());
-        $this->resultWithErrors = AggregateResult::of(new Error(), new Error());
-        $this->resultWithErrorsAndOks = AggregateResult::of(new Error(), new Ok());
+        $this->resultWithOks = AggregateResult::of(Ok::empty(), Ok::empty());
+        $this->resultWithErrors = AggregateResult::of(Error::empty(), Error::empty());
+        $this->resultWithErrorsAndOks = AggregateResult::of(Error::empty(), Ok::empty());
     }
 
     public function tearDown(): void

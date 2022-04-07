@@ -12,6 +12,9 @@ use Throwable;
 
 /**
  * @implements IResult<null, Exception>
+ *
+ * @psalm-consistent-constructor
+ * @psalm-consistent-templates
  */
 abstract class AbstractThrowableError extends Exception implements IResult
 {
@@ -35,7 +38,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     public static function empty(): static
     {
-        return new static();
+        return new static('');
     }
 
     public static function withMessage(string $message): static
@@ -45,7 +48,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure(null):IResult<U, F> $result
      *
@@ -58,6 +61,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     final public function exception(): static
     {
         $this->used = true;
@@ -138,7 +144,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
@@ -179,9 +185,13 @@ abstract class AbstractThrowableError extends Exception implements IResult
      *
      * @throws F
      */
-    final public function orThrow(Throwable $exception): never
+    final public function orThrow(Throwable|Closure $exception): never
     {
         $this->used = true;
+
+        if ($exception instanceof Closure) {
+            throw $exception();
+        }
 
         throw $exception;
     }

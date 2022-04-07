@@ -29,7 +29,7 @@ final class ErrorTest extends TestCase
         $this->emptyError = Error::empty();
         $this->errorFromException = Error::fromException(new LogicException('Frodo Bolsón'));
         $this->errorWithMessage = Error::withMessage('Bilbo Bolsón');
-        $this->ok = new Ok();
+        $this->ok = Ok::empty();
     }
 
     public function tearDown(): void
@@ -264,7 +264,7 @@ final class ErrorTest extends TestCase
         $this->assertException(
             UnusedResult::class,
             function () {
-                $result = new Error();
+                $result = Error::empty();
                 unset($result);
 
                 throw new Exception();

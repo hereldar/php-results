@@ -5,39 +5,35 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
+use Hereldar\Results\Exceptions\UndefinedException;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
-use RuntimeException;
 use Throwable;
 
 /**
  * @template T
- * @template E of Throwable
+ * @template E of Throwable|null
  *
  * @implements IResult<T, E>
  */
 abstract class AbstractResult implements IResult
 {
     protected bool $used = false;
-    protected readonly ?Throwable $exception;
+
     private readonly string $trace;
 
     /**
      * @param T $value
-     * @param E|string $exception
+     * @param E $exception
      */
     public function __construct(
         protected readonly mixed $value = null,
-        Throwable|string $exception = null
+        protected readonly ?Throwable $exception = null
     ) {
         ob_start();
         debug_print_backtrace(limit: 5);
         $this->trace = ob_get_contents();
         ob_end_clean();
-
-        $this->exception = (is_string($exception))
-            ? new RuntimeException($exception)
-            : $exception;
     }
 
     public function __destruct()
@@ -49,13 +45,13 @@ abstract class AbstractResult implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
-     * @return IResult<U, E|F>
+     * @return $this|IResult<U, F>
      */
-    public function andThen(IResult|Closure $result): IResult
+    public function andThen(IResult|Closure $result): static|IResult
     {
         if ($this->isError()) {
             return $this;
@@ -69,7 +65,7 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @return E|null
+     * @return E
      */
     public function exception(): ?Throwable
     {
@@ -105,7 +101,7 @@ abstract class AbstractResult implements IResult
     {
         $this->used = true;
 
-        if (!isset($this->exception)) {
+        if (null === $this->exception) {
             return '';
         }
 
@@ -150,13 +146,13 @@ abstract class AbstractResult implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
-     * @return IResult<T|U, F>
+     * @return static|IResult<U, F>
      */
-    public function orElse(IResult|Closure $result): IResult
+    public function orElse(IResult|Closure $result): static|IResult
     {
         if ($this->isOk()) {
             return $this;
@@ -178,6 +174,10 @@ abstract class AbstractResult implements IResult
     {
         if ($this->isOk()) {
             return $this->value;
+        }
+
+        if (null === $this->exception) {
+            throw new UndefinedException();
         }
 
         throw $this->exception;
@@ -204,10 +204,14 @@ abstract class AbstractResult implements IResult
      *
      * @return T
      */
-    public function orThrow(Throwable $exception): mixed
+    public function orThrow(Throwable|Closure $exception): mixed
     {
         if ($this->isOk()) {
             return $this->value;
+        }
+
+        if ($exception instanceof Closure) {
+            throw $exception();
         }
 
         throw $exception;

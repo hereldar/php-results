@@ -25,7 +25,7 @@ final class OkTest extends TestCase
 
         $this->emptyOk = Ok::empty();
         $this->okWithValue = Ok::withValue(42);
-        $this->error = new Error();
+        $this->error = Error::empty();
     }
 
     public function tearDown(): void
@@ -182,7 +182,7 @@ final class OkTest extends TestCase
         $this->assertException(
             UnusedResult::class,
             function () {
-                $result = new Ok();
+                $result = Ok::empty();
                 unset($result);
 
                 throw new Exception();

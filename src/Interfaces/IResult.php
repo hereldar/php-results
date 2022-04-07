@@ -9,7 +9,7 @@ use Throwable;
 
 /**
  * @template T
- * @template E of Throwable
+ * @template E of Throwable|null
  */
 interface IResult
 {
@@ -21,13 +21,13 @@ interface IResult
      * is a success, this method will call it and return its output.
      *
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
-     * @return IResult<U, E|F>
+     * @return $this|IResult<U, F>
      */
-    public function andThen(IResult|Closure $result): IResult;
+    public function andThen(IResult|Closure $result): static|IResult;
 
     /**
      * Returns the result's exception, if any.
@@ -97,13 +97,13 @@ interface IResult
      * is an error, this method will call it and return its output.
      *
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
-     * @return IResult<T|U, F>
+     * @return $this|IResult<T|U, F>
      */
-    public function orElse(IResult|Closure $result): IResult;
+    public function orElse(IResult|Closure $result): static|IResult;
 
     /**
      * Throws an exception if the result is an error. Otherwise,
@@ -138,7 +138,7 @@ interface IResult
      *
      * @return T
      */
-    public function orThrow(Throwable $exception): mixed;
+    public function orThrow(Throwable|Closure $exception): mixed;
 
     /**
      * Returns the result's value, if any.

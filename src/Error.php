@@ -14,27 +14,26 @@ use Throwable;
  * @template E of Throwable
  *
  * @implements IResult<null, E>
+ *
+ * @psalm-consistent-constructor
+ * @psalm-consistent-templates
  */
 class Error implements IResult
 {
     protected bool $used = false;
-    private readonly Throwable $exception;
+
     private readonly string $trace;
 
     /**
      * @param E $exception
      */
     public function __construct(
-        Throwable|string $exception = ''
+        private readonly Throwable $exception
     ) {
         ob_start();
         debug_print_backtrace(limit: 5);
         $this->trace = ob_get_contents();
         ob_end_clean();
-
-        $this->exception = (is_string($exception))
-            ? new RuntimeException($exception)
-            : $exception;
     }
 
     public function __destruct()
@@ -49,7 +48,7 @@ class Error implements IResult
      */
     public static function empty(): static
     {
-        return new static();
+        return new static(new RuntimeException());
     }
 
     /**
@@ -69,12 +68,12 @@ class Error implements IResult
      */
     public static function withMessage(string $message): static
     {
-        return new static($message);
+        return new static(new RuntimeException($message));
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure(null):IResult<U, F> $result
      *
@@ -170,7 +169,7 @@ class Error implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
@@ -211,9 +210,13 @@ class Error implements IResult
      *
      * @throws F
      */
-    final public function orThrow(Throwable $exception): never
+    final public function orThrow(Throwable|Closure $exception): never
     {
         $this->used = true;
+
+        if ($exception instanceof Closure) {
+            throw $exception();
+        }
 
         throw $exception;
     }

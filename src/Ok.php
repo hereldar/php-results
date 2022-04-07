@@ -13,6 +13,9 @@ use Throwable;
  * @template T
  *
  * @implements IResult<T, null>
+ *
+ * @psalm-consistent-constructor
+ * @psalm-consistent-templates
  */
 class Ok implements IResult
 {
@@ -43,7 +46,7 @@ class Ok implements IResult
      */
     public static function empty(): static
     {
-        return new static();
+        return new static(null);
     }
 
     /**
@@ -60,7 +63,7 @@ class Ok implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure(T):IResult<U, F> $result
      *
@@ -152,7 +155,7 @@ class Ok implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of Throwable|null
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
@@ -192,7 +195,7 @@ class Ok implements IResult
      *
      * @return T
      */
-    final public function orThrow(Throwable $exception): mixed
+    final public function orThrow(Throwable|Closure $exception): mixed
     {
         $this->used = true;
 

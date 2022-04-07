@@ -30,7 +30,7 @@ final class AbstractThrowableErrorTest extends TestCase
 
         $this->emptyError = CustomError::empty();
         $this->errorWithMessage = CustomError::withMessage('Bilbo Bolsón');
-        $this->ok = new Ok();
+        $this->ok = Ok::empty();
     }
 
     public function tearDown(): void
