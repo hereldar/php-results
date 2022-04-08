@@ -20,7 +20,7 @@ use Throwable;
 class Ok implements IResult
 {
     protected bool $used = false;
-    private readonly string $trace;
+    private readonly Backtrace $trace;
 
     /**
      * @param T $value
@@ -28,16 +28,13 @@ class Ok implements IResult
     public function __construct(
         protected readonly mixed $value = null,
     ) {
-        ob_start();
-        debug_print_backtrace(limit: 5);
-        $this->trace = ob_get_contents();
-        ob_end_clean();
+        $this->trace = new Backtrace($this::class);
     }
 
     public function __destruct()
     {
         if (!$this->used) {
-            throw new UnusedResult($this, $this->trace);
+            throw new UnusedResult($this, (string) $this->trace);
         }
     }
 

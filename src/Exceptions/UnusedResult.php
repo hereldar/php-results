@@ -9,17 +9,17 @@ use LogicException;
 
 final class UnusedResult extends LogicException
 {
-    private const SHORT_MESSAGE = 'Unused `%s` that must be used';
-    private const LONG_MESSAGE = "Unused `%s` that must be used\n%s";
+    private const SHORT_MESSAGE = 'Result `%s` must be used';
+    private const LONG_MESSAGE = "Result `%s` must be used\n%s";
 
     public function __construct(
-        private IResult $result,
-        private ?string $trace = null,
+        private readonly IResult $result,
+        ?string $trace = null,
     ) {
         parent::__construct(
-            (null === $this->trace)
+            (null === $trace)
                 ? sprintf(self::SHORT_MESSAGE, $result::class)
-                : sprintf(self::LONG_MESSAGE, $result::class, $this->trace)
+                : sprintf(self::LONG_MESSAGE, $result::class, $trace)
         );
     }
 

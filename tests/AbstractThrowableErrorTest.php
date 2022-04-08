@@ -28,8 +28,8 @@ final class AbstractThrowableErrorTest extends TestCase
     {
         parent::setUp();
 
-        $this->emptyError = CustomError::empty();
-        $this->errorWithMessage = CustomError::withMessage('Bilbo Bolsón');
+        $this->emptyError = new CustomError('');
+        $this->errorWithMessage = new CustomError('Bilbo Bolsón');
         $this->ok = Ok::empty();
     }
 
@@ -210,7 +210,7 @@ final class AbstractThrowableErrorTest extends TestCase
         $this->assertException(
             UnusedResult::class,
             function () {
-                CustomError::empty();
+                new CustomError();
             }
         );
     }

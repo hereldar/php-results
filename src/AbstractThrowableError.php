@@ -12,9 +12,6 @@ use Throwable;
 
 /**
  * @implements IResult<null, Exception>
- *
- * @psalm-consistent-constructor
- * @psalm-consistent-templates
  */
 abstract class AbstractThrowableError extends Exception implements IResult
 {
@@ -30,20 +27,10 @@ abstract class AbstractThrowableError extends Exception implements IResult
     {
         if (!$this->used) {
             $trace = $this->getTraceAsString();
-            $lines = array_slice(explode("\n", $trace), 0, 5);
+            $lines = array_slice(explode("\n", $trace), 0, 4);
 
             throw new UnusedResult($this, implode("\n", $lines));
         }
-    }
-
-    public static function empty(): static
-    {
-        return new static('');
-    }
-
-    public static function withMessage(string $message): static
-    {
-        return new static($message);
     }
 
     /**

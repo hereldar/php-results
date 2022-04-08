@@ -21,8 +21,7 @@ use Throwable;
 class Error implements IResult
 {
     protected bool $used = false;
-
-    private readonly string $trace;
+    private readonly Backtrace $trace;
 
     /**
      * @param E $exception
@@ -30,16 +29,13 @@ class Error implements IResult
     public function __construct(
         private readonly Throwable $exception
     ) {
-        ob_start();
-        debug_print_backtrace(limit: 5);
-        $this->trace = ob_get_contents();
-        ob_end_clean();
+        $this->trace = new Backtrace($this::class);
     }
 
     public function __destruct()
     {
         if (!$this->used) {
-            throw new UnusedResult($this, $this->trace);
+            throw new UnusedResult($this, (string) $this->trace);
         }
     }
 

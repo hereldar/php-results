@@ -17,13 +17,17 @@ use Hereldar\Results\Interfaces\IResult;
  */
 class AggregateResult extends AbstractResult implements IAggregateResult
 {
-    /** @var IResult[] */
+    /**
+     * @var IResult[]
+     *
+     * @psalm-var list<IResult>
+     */
     protected readonly array $individualResults;
     protected readonly bool $isError;
 
     public function __construct(IResult ...$results)
     {
-        $this->individualResults = $results;
+        $this->individualResults = array_values($results);
         $this->isError = (bool) $this->countIndividualErrors();
 
         parent::__construct(

@@ -19,8 +19,7 @@ use Throwable;
 abstract class AbstractResult implements IResult
 {
     protected bool $used = false;
-
-    private readonly string $trace;
+    private readonly Backtrace $trace;
 
     /**
      * @param T $value
@@ -30,16 +29,13 @@ abstract class AbstractResult implements IResult
         protected readonly mixed $value = null,
         protected readonly ?Throwable $exception = null
     ) {
-        ob_start();
-        debug_print_backtrace(limit: 5);
-        $this->trace = ob_get_contents();
-        ob_end_clean();
+        $this->trace = new Backtrace($this::class);
     }
 
     public function __destruct()
     {
         if (!$this->used) {
-            throw new UnusedResult($this, $this->trace);
+            throw new UnusedResult($this, (string) $this->trace);
         }
     }
 
@@ -177,7 +173,7 @@ abstract class AbstractResult implements IResult
         }
 
         if (null === $this->exception) {
-            throw new UndefinedException();
+            throw new UndefinedException($this);
         }
 
         throw $this->exception;
