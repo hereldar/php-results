@@ -27,7 +27,7 @@ final class ErrorTest extends TestCase
         parent::setUp();
 
         $this->emptyError = Error::empty();
-        $this->errorFromException = Error::fromException(new LogicException('Frodo Bolsón'));
+        $this->errorFromException = Error::withException(new LogicException('Frodo Bolsón'));
         $this->errorWithMessage = Error::withMessage('Bilbo Bolsón');
         $this->ok = Ok::empty();
     }

@@ -11,22 +11,20 @@ use Throwable;
 
 /**
  * @template T
+ * @template E of Throwable
  *
- * @implements IResult<T, null>
- *
- * @psalm-consistent-constructor
- * @psalm-consistent-templates
+ * @implements IResult<T, E>
  */
-class Ok implements IResult
+final class Ok implements IResult
 {
-    protected bool $used = false;
+    private bool $used = false;
     private readonly Backtrace $trace;
 
     /**
      * @param T $value
      */
     public function __construct(
-        protected readonly mixed $value = null,
+        private readonly mixed $value = null,
     ) {
         $this->trace = new Backtrace($this::class);
     }
@@ -39,11 +37,11 @@ class Ok implements IResult
     }
 
     /**
-     * @return static<null>
+     * @return self<null, E>
      */
-    public static function empty(): static
+    public static function empty(): self
     {
-        return new static(null);
+        return new self(null);
     }
 
     /**
@@ -51,22 +49,22 @@ class Ok implements IResult
      *
      * @param U $value
      *
-     * @return static<U>
+     * @return self<U, E>
      */
-    public static function withValue(mixed $value): static
+    public static function withValue(mixed $value): self
     {
-        return new static($value);
+        return new self($value);
     }
 
     /**
      * @template U
-     * @template F of Throwable|null
+     * @template F of Throwable
      *
-     * @param IResult<U, F>|Closure(T):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T|null):IResult<U, F> $result
      *
      * @return IResult<U, F>
      */
-    final public function andThen(IResult|Closure $result): IResult
+    public function andThen(IResult|Closure $result): IResult
     {
         $this->used = true;
 
@@ -77,49 +75,49 @@ class Ok implements IResult
         return $result;
     }
 
-    final public function exception(): ?Throwable
+    public function exception(): ?Throwable
     {
         $this->used = true;
 
         return null;
     }
 
-    final public function hasMessage(): bool
+    public function hasMessage(): bool
     {
         $this->used = true;
 
         return false;
     }
 
-    final public function hasException(): bool
+    public function hasException(): bool
     {
         $this->used = true;
 
         return false;
     }
 
-    final public function hasValue(): bool
+    public function hasValue(): bool
     {
         $this->used = true;
 
         return ($this->value !== null);
     }
 
-    final public function isError(): bool
+    public function isError(): bool
     {
         $this->used = true;
 
         return false;
     }
 
-    final public function isOk(): bool
+    public function isOk(): bool
     {
         $this->used = true;
 
         return true;
     }
 
-    final public function message(): string
+    public function message(): string
     {
         $this->used = true;
 
@@ -133,7 +131,7 @@ class Ok implements IResult
      *
      * @return T
      */
-    final public function or(mixed $value): mixed
+    public function or(mixed $value): mixed
     {
         $this->used = true;
 
@@ -143,7 +141,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    final public function orDie(int|string $status = null): mixed
+    public function orDie(int|string $status = null): mixed
     {
         $this->used = true;
 
@@ -152,13 +150,13 @@ class Ok implements IResult
 
     /**
      * @template U
-     * @template F of Throwable|null
+     * @template F of Throwable
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
      * @return $this
      */
-    final public function orElse(IResult|Closure $result): static
+    public function orElse(IResult|Closure $result): self
     {
         $this->used = true;
 
@@ -168,7 +166,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    final public function orFail(): mixed
+    public function orFail(): mixed
     {
         $this->used = true;
 
@@ -178,7 +176,17 @@ class Ok implements IResult
     /**
      * @return T
      */
-    final public function orNull(): mixed
+    public function orFalse(): mixed
+    {
+        $this->used = true;
+
+        return $this->value;
+    }
+
+    /**
+     * @return T
+     */
+    public function orNull(): mixed
     {
         $this->used = true;
 
@@ -192,7 +200,7 @@ class Ok implements IResult
      *
      * @return T
      */
-    final public function orThrow(Throwable|Closure $exception): mixed
+    public function orThrow(Throwable|Closure $exception): mixed
     {
         $this->used = true;
 
@@ -202,7 +210,7 @@ class Ok implements IResult
     /**
      * @return T
      */
-    final public function value(): mixed
+    public function value(): mixed
     {
         $this->used = true;
 

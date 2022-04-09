@@ -11,11 +11,15 @@ use Hereldar\Results\Interfaces\IResult;
 class AggregateException extends Exception implements IAggregateException
 {
     /**
-     * @param IResult[] $results
+     * @var IResult[]
+     *
+     * @psalm-var list<IResult>
      */
-    public function __construct(
-        protected readonly array $results
-    ) {
+    protected readonly array $results;
+
+    public function __construct(array $results)
+    {
+        $this->results = $results;
         parent::__construct();
     }
 

@@ -4,13 +4,23 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Interfaces;
 
+/**
+ * @template T
+ * @template E of IAggregateException
+ *
+ * @extends IResult<T, E>
+ */
 interface IAggregateResult extends IResult
 {
+    public function __construct(IResult ...$results);
+
     /**
      * Returns an array with the errors that includes the aggregate
      * result.
      *
      * @return IResult[]
+     *
+     * @psalm-return list<IResult>
      */
     public function individualErrors(): array;
 
@@ -19,6 +29,8 @@ interface IAggregateResult extends IResult
      * aggregate result.
      *
      * @return IResult[]
+     *
+     * @psalm-return list<IResult>
      */
     public function individualResults(): array;
 

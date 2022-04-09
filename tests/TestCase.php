@@ -14,7 +14,7 @@ use Throwable;
 abstract class TestCase extends PHPUnitTestCase
 {
     /**
-     * @psalm-param class-string<Throwable> $expectedException
+     * @param class-string<Throwable> $expectedException
      */
     public function assertException(
         string $expectedException,

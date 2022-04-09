@@ -12,7 +12,7 @@ final class Backtrace
     /**
      * @var array[]
      *
-     * @psalm-var list<array{file: string, line: int, class?: class-string, function: string}>
+     * @psalm-var list<array{file?: string, line?: int, class?: class-string, function: string}>
      */
     private readonly array $trace;
 
@@ -29,7 +29,7 @@ final class Backtrace
         $lastIndex = null;
 
         foreach ($trace as $i => $call) {
-            if (($call['class'] ?? '') === $class) {
+            if ($class === ($call['class'] ?? '')) {
                 $lastIndex = $i;
             }
         }
@@ -61,11 +61,7 @@ final class Backtrace
                 $string .= "{$call['class']}::";
             }
 
-            if (isset($call['function'])) {
-                $string .= "{$call['function']}()";
-            }
-
-            $string .= "\n";
+            $string .= "{$call['function']}()\n";
         }
 
         return $string;

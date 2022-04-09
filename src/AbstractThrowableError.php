@@ -35,7 +35,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     /**
      * @template U
-     * @template F of Throwable|null
+     * @template F of Throwable
      *
      * @param IResult<U, F>|Closure(null):IResult<U, F> $result
      *
@@ -131,7 +131,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     /**
      * @template U
-     * @template F of Throwable|null
+     * @template F of Throwable
      *
      * @param IResult<U, F>|Closure():IResult<U, F> $result
      *
@@ -149,13 +149,23 @@ abstract class AbstractThrowableError extends Exception implements IResult
     }
 
     /**
-     * @throws static
+     * @throws $this
      */
     final public function orFail(): never
     {
         $this->used = true;
 
         throw $this;
+    }
+
+    /**
+     * @return false
+     */
+    final public function orFalse(): bool
+    {
+        $this->used = true;
+
+        return false;
     }
 
     final public function orNull(): mixed

@@ -10,10 +10,8 @@ use Hereldar\Results\Interfaces\IAggregateResult;
 use Hereldar\Results\Interfaces\IResult;
 
 /**
- * @extends AbstractResult<null, IAggregateException|null>
- *
- * @psalm-consistent-constructor
- * @psalm-consistent-templates
+ * @extends AbstractResult<null, IAggregateException>
+ * @implements IAggregateResult<null, IAggregateException>
  */
 class AggregateResult extends AbstractResult implements IAggregateResult
 {
@@ -23,15 +21,15 @@ class AggregateResult extends AbstractResult implements IAggregateResult
      * @psalm-var list<IResult>
      */
     protected readonly array $individualResults;
-    protected readonly bool $isError;
 
     public function __construct(IResult ...$results)
     {
         $this->individualResults = array_values($results);
-        $this->isError = (bool) $this->countIndividualErrors();
 
         parent::__construct(
-            exception: ($this->isError) ? $this->aggregateException() : null,
+            exception: ($this->countIndividualErrors())
+                ? $this->aggregateException()
+                : null,
         );
     }
 
@@ -72,20 +70,6 @@ class AggregateResult extends AbstractResult implements IAggregateResult
         $this->used = true;
 
         return !$this->individualResults;
-    }
-
-    public function isError(): bool
-    {
-        $this->used = true;
-
-        return $this->isError;
-    }
-
-    public function isOk(): bool
-    {
-        $this->used = true;
-
-        return !$this->isError;
     }
 
     private function aggregateException(): IAggregateException

@@ -13,7 +13,7 @@ final class UnusedResult extends LogicException
     private const LONG_MESSAGE = "Result `%s` must be used\n%s";
 
     public function __construct(
-        private readonly IResult $result,
+        IResult $result,
         ?string $trace = null,
     ) {
         parent::__construct(
@@ -21,10 +21,5 @@ final class UnusedResult extends LogicException
                 ? sprintf(self::SHORT_MESSAGE, $result::class)
                 : sprintf(self::LONG_MESSAGE, $result::class, $trace)
         );
-    }
-
-    public function getResult(): IResult
-    {
-        return $this->result;
     }
 }
