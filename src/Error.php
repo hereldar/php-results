@@ -133,6 +133,32 @@ final class Error implements IResult
     }
 
     /**
+     * @param Closure(E):void $action
+     *
+     * @return $this
+     */
+    public function onFailure(Closure $action): static
+    {
+        $this->used = true;
+
+        $action($this->exception);
+
+        return $this;
+    }
+
+    /**
+     * @param Closure(T):void $action
+     *
+     * @return $this
+     */
+    public function onSuccess(Closure $action): static
+    {
+        $this->used = true;
+
+        return $this;
+    }
+
+    /**
      * @template U
      *
      * @param U|Closure():U $value

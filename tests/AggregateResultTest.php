@@ -57,120 +57,120 @@ final class AggregateResultTest extends TestCase
 
     public function testResultType(): void
     {
-        $this->assertFalse($this->emptyResult->isError());
-        $this->assertFalse($this->resultWithOks->isError());
-        $this->assertTrue($this->resultWithErrors->isError());
-        $this->assertTrue($this->resultWithErrorsAndOks->isError());
+        self::assertFalse($this->emptyResult->isError());
+        self::assertFalse($this->resultWithOks->isError());
+        self::assertTrue($this->resultWithErrors->isError());
+        self::assertTrue($this->resultWithErrorsAndOks->isError());
 
-        $this->assertTrue($this->emptyResult->isOk());
-        $this->assertTrue($this->resultWithOks->isOk());
-        $this->assertFalse($this->resultWithErrors->isOk());
-        $this->assertFalse($this->resultWithErrorsAndOks->isOk());
+        self::assertTrue($this->emptyResult->isOk());
+        self::assertTrue($this->resultWithOks->isOk());
+        self::assertFalse($this->resultWithErrors->isOk());
+        self::assertFalse($this->resultWithErrorsAndOks->isOk());
     }
 
     public function testResultException(): void
     {
-        $this->assertFalse($this->emptyResult->hasException());
-        $this->assertFalse($this->resultWithOks->hasException());
-        $this->assertTrue($this->resultWithErrors->hasException());
-        $this->assertTrue($this->resultWithErrorsAndOks->hasException());
+        self::assertFalse($this->emptyResult->hasException());
+        self::assertFalse($this->resultWithOks->hasException());
+        self::assertTrue($this->resultWithErrors->hasException());
+        self::assertTrue($this->resultWithErrorsAndOks->hasException());
 
-        $this->assertNull($this->emptyResult->exception());
-        $this->assertNull($this->resultWithOks->exception());
-        $this->assertInstanceOf(AggregateException::class, $this->resultWithErrors->exception());
-        $this->assertInstanceOf(AggregateException::class, $this->resultWithErrorsAndOks->exception());
+        self::assertNull($this->emptyResult->exception());
+        self::assertNull($this->resultWithOks->exception());
+        self::assertInstanceOf(AggregateException::class, $this->resultWithErrors->exception());
+        self::assertInstanceOf(AggregateException::class, $this->resultWithErrorsAndOks->exception());
     }
 
     public function testResultMessage(): void
     {
-        $this->assertFalse($this->emptyResult->hasMessage());
-        $this->assertFalse($this->resultWithOks->hasMessage());
-        $this->assertFalse($this->resultWithErrors->hasMessage());
-        $this->assertFalse($this->resultWithErrorsAndOks->hasMessage());
+        self::assertFalse($this->emptyResult->hasMessage());
+        self::assertFalse($this->resultWithOks->hasMessage());
+        self::assertFalse($this->resultWithErrors->hasMessage());
+        self::assertFalse($this->resultWithErrorsAndOks->hasMessage());
 
-        $this->assertSame('', $this->emptyResult->message());
-        $this->assertSame('', $this->resultWithOks->message());
-        $this->assertSame('', $this->resultWithErrors->message());
-        $this->assertSame('', $this->resultWithErrorsAndOks->message());
+        self::assertSame('', $this->emptyResult->message());
+        self::assertSame('', $this->resultWithOks->message());
+        self::assertSame('', $this->resultWithErrors->message());
+        self::assertSame('', $this->resultWithErrorsAndOks->message());
     }
 
     public function testResultValue(): void
     {
-        $this->assertFalse($this->emptyResult->hasValue());
-        $this->assertFalse($this->resultWithOks->hasValue());
-        $this->assertFalse($this->resultWithErrors->hasValue());
-        $this->assertFalse($this->resultWithErrorsAndOks->hasValue());
+        self::assertFalse($this->emptyResult->hasValue());
+        self::assertFalse($this->resultWithOks->hasValue());
+        self::assertFalse($this->resultWithErrors->hasValue());
+        self::assertFalse($this->resultWithErrorsAndOks->hasValue());
 
-        $this->assertNull($this->emptyResult->value());
-        $this->assertNull($this->resultWithOks->value());
-        $this->assertNull($this->resultWithErrors->value());
-        $this->assertNull($this->resultWithErrorsAndOks->value());
+        self::assertNull($this->emptyResult->value());
+        self::assertNull($this->resultWithOks->value());
+        self::assertNull($this->resultWithErrors->value());
+        self::assertNull($this->resultWithErrorsAndOks->value());
     }
 
     public function testBooleanOperations(): void
     {
-        $this->assertNull($this->emptyResult->or(true));
-        $this->assertNull($this->resultWithOks->or(true));
-        $this->assertTrue($this->resultWithErrors->or(true));
-        $this->assertTrue($this->resultWithErrorsAndOks->or(true));
+        self::assertNull($this->emptyResult->or(true));
+        self::assertNull($this->resultWithOks->or(true));
+        self::assertTrue($this->resultWithErrors->or(true));
+        self::assertTrue($this->resultWithErrorsAndOks->or(true));
 
-        $this->assertNull($this->emptyResult->orNull());
-        $this->assertNull($this->resultWithOks->orNull());
-        $this->assertNull($this->resultWithErrors->orNull());
-        $this->assertNull($this->resultWithErrorsAndOks->orNull());
+        self::assertNull($this->emptyResult->orNull());
+        self::assertNull($this->resultWithOks->orNull());
+        self::assertNull($this->resultWithErrors->orNull());
+        self::assertNull($this->resultWithErrorsAndOks->orNull());
 
-        $this->assertNull($this->emptyResult->orFail());
-        $this->assertNull($this->resultWithOks->orFail());
-        $this->assertException(
+        self::assertNull($this->emptyResult->orFail());
+        self::assertNull($this->resultWithOks->orFail());
+        self::assertException(
             AggregateException::class,
             fn () => $this->resultWithErrors->orFail(),
         );
-        $this->assertException(
+        self::assertException(
             AggregateException::class,
             fn () => $this->resultWithErrorsAndOks->orFail(),
         );
 
-        $this->assertNull($this->emptyResult->orThrow(new UnexpectedValueException()));
-        $this->assertNull($this->resultWithOks->orThrow(new UnexpectedValueException()));
-        $this->assertException(
+        self::assertNull($this->emptyResult->orThrow(new UnexpectedValueException()));
+        self::assertNull($this->resultWithOks->orThrow(new UnexpectedValueException()));
+        self::assertException(
             UnexpectedValueException::class,
             fn () => $this->resultWithErrors->orThrow(new UnexpectedValueException()),
         );
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             'The result was an error',
             fn () => $this->resultWithErrorsAndOks->orThrow(new UnexpectedValueException('The result was an error')),
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyResult,
             $this->emptyResult->orElse($this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithOks,
             $this->resultWithOks->orElse($this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrors->orElse($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrorsAndOks->orElse($this->ok)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->emptyResult->andThen($this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->resultWithOks->andThen($this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrors,
             $this->resultWithErrors->andThen($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrorsAndOks,
             $this->resultWithErrorsAndOks->andThen($this->ok)
         );
@@ -178,71 +178,71 @@ final class AggregateResultTest extends TestCase
 
     public function testBooleanOperationsWithClosures(): void
     {
-        $this->assertNull(
+        self::assertNull(
             $this->emptyResult->or(function () {
                 return true;
             })
         );
-        $this->assertNull(
+        self::assertNull(
             $this->resultWithOks->or(function () {
                 return true;
             })
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->resultWithErrors->or(function () {
                 return true;
             })
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->resultWithErrorsAndOks->or(function () {
                 return true;
             })
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyResult,
             $this->emptyResult->orElse(function () {
                 return $this->error;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithOks,
             $this->resultWithOks->orElse(function () {
                 return $this->error;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrors->orElse(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrorsAndOks->orElse(function () {
                 return $this->ok;
             })
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->emptyResult->andThen(function () {
                 return $this->error;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->resultWithOks->andThen(function () {
                 return $this->error;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrors,
             $this->resultWithErrors->andThen(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrorsAndOks,
             $this->resultWithErrorsAndOks->andThen(function () {
                 return $this->ok;
@@ -252,70 +252,117 @@ final class AggregateResultTest extends TestCase
 
     public function testBooleanOperationsWithArrowFunctions(): void
     {
-        $this->assertNull(
+        self::assertNull(
             $this->emptyResult->or(fn () => true)
         );
-        $this->assertNull(
+        self::assertNull(
             $this->resultWithOks->or(fn () => true)
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->resultWithErrors->or(fn () => true)
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->resultWithErrorsAndOks->or(fn () => true)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyResult,
             $this->emptyResult->orElse(fn () => $this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithOks,
             $this->resultWithOks->orElse(fn () => $this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrors->orElse(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->resultWithErrorsAndOks->orElse(fn () => $this->ok)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->emptyResult->andThen(fn () => $this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->error,
             $this->resultWithOks->andThen(fn () => $this->error)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrors,
             $this->resultWithErrors->andThen(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->resultWithErrorsAndOks,
             $this->resultWithErrorsAndOks->andThen(fn () => $this->ok)
         );
     }
 
+    public function testActions(): void
+    {
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->emptyResult->onSuccess(fn () => throw new Exception());
+            }
+        );
+        self::assertSame(
+            $this->emptyResult,
+            $this->emptyResult->onFailure(fn () => throw new Exception())
+        );
+
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->resultWithOks->onSuccess(fn () => throw new Exception());
+            }
+        );
+        self::assertSame(
+            $this->resultWithOks,
+            $this->resultWithOks->onFailure(fn () => throw new Exception())
+        );
+
+        self::assertSame(
+            $this->resultWithErrors,
+            $this->resultWithErrors->onSuccess(fn () => throw new Exception())
+        );
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->resultWithErrors->onFailure(fn () => throw new Exception());
+            }
+        );
+
+        self::assertSame(
+            $this->resultWithErrorsAndOks,
+            $this->resultWithErrorsAndOks->onSuccess(fn () => throw new Exception())
+        );
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->resultWithErrorsAndOks->onFailure(fn () => throw new Exception());
+            }
+        );
+    }
+
     public function testIndividualResults(): void
     {
-        $this->assertTrue($this->emptyResult->isEmpty());
-        $this->assertFalse($this->resultWithOks->isEmpty());
-        $this->assertFalse($this->resultWithErrors->isEmpty());
-        $this->assertFalse($this->resultWithErrorsAndOks->isEmpty());
+        self::assertTrue($this->emptyResult->isEmpty());
+        self::assertFalse($this->resultWithOks->isEmpty());
+        self::assertFalse($this->resultWithErrors->isEmpty());
+        self::assertFalse($this->resultWithErrorsAndOks->isEmpty());
 
-        $this->assertCount(0, $this->emptyResult->individualResults());
-        $this->assertCount(2, $this->resultWithOks->individualResults());
-        $this->assertCount(2, $this->resultWithErrors->individualResults());
-        $this->assertCount(2, $this->resultWithErrorsAndOks->individualResults());
+        self::assertCount(0, $this->emptyResult->individualResults());
+        self::assertCount(2, $this->resultWithOks->individualResults());
+        self::assertCount(2, $this->resultWithErrors->individualResults());
+        self::assertCount(2, $this->resultWithErrorsAndOks->individualResults());
 
-        $this->assertCount(0, $this->emptyResult->individualErrors());
-        $this->assertCount(0, $this->resultWithOks->individualErrors());
-        $this->assertCount(2, $this->resultWithErrors->individualErrors());
-        $this->assertCount(1, $this->resultWithErrorsAndOks->individualErrors());
+        self::assertCount(0, $this->emptyResult->individualErrors());
+        self::assertCount(0, $this->resultWithOks->individualErrors());
+        self::assertCount(2, $this->resultWithErrors->individualErrors());
+        self::assertCount(1, $this->resultWithErrorsAndOks->individualErrors());
     }
 
     public function testAggregateException(): void
@@ -323,23 +370,21 @@ final class AggregateResultTest extends TestCase
         try {
             $this->resultWithErrors->orFail();
         } catch (IAggregateException $exceptionWithErrors) {
+            self::assertCount(2, $exceptionWithErrors->getResults());
+            self::assertCount(2, $exceptionWithErrors->getErrors());
         }
 
         try {
             $this->resultWithErrorsAndOks->orFail();
         } catch (IAggregateException $exceptionWithErrorsAndOks) {
+            self::assertCount(2, $exceptionWithErrorsAndOks->getResults());
+            self::assertCount(1, $exceptionWithErrorsAndOks->getErrors());
         }
-
-        $this->assertCount(2, $exceptionWithErrors->getResults());
-        $this->assertCount(2, $exceptionWithErrorsAndOks->getResults());
-
-        $this->assertCount(2, $exceptionWithErrors->getErrors());
-        $this->assertCount(1, $exceptionWithErrorsAndOks->getErrors());
     }
 
     public function testUnusedException(): void
     {
-        $this->assertException(
+        self::assertException(
             UnusedResult::class,
             function () {
                 $result = new AggregateResult();
@@ -349,7 +394,7 @@ final class AggregateResultTest extends TestCase
             }
         );
 
-        $this->assertException(
+        self::assertException(
             UnusedResult::class,
             function () {
                 AggregateResult::empty();

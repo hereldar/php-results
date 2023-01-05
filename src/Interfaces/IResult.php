@@ -67,6 +67,27 @@ interface IResult
     public function message(): string;
 
     /**
+     * Performs the given `action` on the encapsulated `Throwable`
+     * exception if this instance is an error. Returns the original
+     * instance unchanged.
+     *
+     * @param Closure(E):void $action
+     *
+     * @return $this
+     */
+    public function onFailure(Closure $action): static;
+
+    /**
+     * Performs the given `action` on the encapsulated value if this
+     * instance is a success. Returns the original instance unchanged.
+     *
+     * @param Closure(T):void $action
+     *
+     * @return $this
+     */
+    public function onSuccess(Closure $action): static;
+
+    /**
      * Returns `value` if the result is an error. Otherwise, returns
      * the success value.
      *

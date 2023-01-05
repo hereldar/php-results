@@ -54,7 +54,7 @@ abstract class AbstractResult implements IResult
         }
 
         if ($result instanceof Closure) {
-            return $result($this->value());
+            return $result($this->value);
         }
 
         return $result;
@@ -112,6 +112,34 @@ abstract class AbstractResult implements IResult
         }
 
         return $this->exception->getMessage();
+    }
+
+    /**
+     * @param Closure(E):void $action
+     *
+     * @return $this
+     */
+    public function onFailure(Closure $action): static
+    {
+        if ($this->isError()) {
+            $action($this->exception);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Closure(T):void $action
+     *
+     * @return $this
+     */
+    public function onSuccess(Closure $action): static
+    {
+        if ($this->isOk()) {
+            $action($this->value);
+        }
+
+        return $this;
     }
 
     /**

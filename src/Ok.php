@@ -69,7 +69,7 @@ final class Ok implements IResult
         $this->used = true;
 
         if ($result instanceof Closure) {
-            return $result($this->value());
+            return $result($this->value);
         }
 
         return $result;
@@ -82,14 +82,14 @@ final class Ok implements IResult
         return null;
     }
 
-    public function hasMessage(): bool
+    public function hasException(): bool
     {
         $this->used = true;
 
         return false;
     }
 
-    public function hasException(): bool
+    public function hasMessage(): bool
     {
         $this->used = true;
 
@@ -122,6 +122,32 @@ final class Ok implements IResult
         $this->used = true;
 
         return '';
+    }
+
+    /**
+     * @param Closure(E):void $action
+     *
+     * @return $this
+     */
+    public function onFailure(Closure $action): static
+    {
+        $this->used = true;
+
+        return $this;
+    }
+
+    /**
+     * @param Closure(T):void $action
+     *
+     * @return $this
+     */
+    public function onSuccess(Closure $action): static
+    {
+        $this->used = true;
+
+        $action($this->value);
+
+        return $this;
     }
 
     /**

@@ -45,119 +45,119 @@ final class ErrorTest extends TestCase
 
     public function testResultType(): void
     {
-        $this->assertTrue($this->emptyError->isError());
-        $this->assertTrue($this->errorFromException->isError());
-        $this->assertTrue($this->errorWithMessage->isError());
+        self::assertTrue($this->emptyError->isError());
+        self::assertTrue($this->errorFromException->isError());
+        self::assertTrue($this->errorWithMessage->isError());
 
-        $this->assertFalse($this->emptyError->isOk());
-        $this->assertFalse($this->errorFromException->isOk());
-        $this->assertFalse($this->errorWithMessage->isOk());
+        self::assertFalse($this->emptyError->isOk());
+        self::assertFalse($this->errorFromException->isOk());
+        self::assertFalse($this->errorWithMessage->isOk());
     }
 
     public function testResultException(): void
     {
-        $this->assertTrue($this->emptyError->hasException());
-        $this->assertTrue($this->errorFromException->hasException());
-        $this->assertTrue($this->errorWithMessage->hasException());
+        self::assertTrue($this->emptyError->hasException());
+        self::assertTrue($this->errorFromException->hasException());
+        self::assertTrue($this->errorWithMessage->hasException());
 
-        $this->assertInstanceOf(RuntimeException::class, $this->emptyError->exception());
-        $this->assertInstanceOf(LogicException::class, $this->errorFromException->exception());
-        $this->assertInstanceOf(RuntimeException::class, $this->errorWithMessage->exception());
+        self::assertInstanceOf(RuntimeException::class, $this->emptyError->exception());
+        self::assertInstanceOf(LogicException::class, $this->errorFromException->exception());
+        self::assertInstanceOf(RuntimeException::class, $this->errorWithMessage->exception());
     }
 
     public function testResultMessage(): void
     {
-        $this->assertFalse($this->emptyError->hasMessage());
-        $this->assertTrue($this->errorFromException->hasMessage());
-        $this->assertTrue($this->errorWithMessage->hasMessage());
+        self::assertFalse($this->emptyError->hasMessage());
+        self::assertTrue($this->errorFromException->hasMessage());
+        self::assertTrue($this->errorWithMessage->hasMessage());
 
-        $this->assertSame('', $this->emptyError->message());
-        $this->assertSame('Frodo Bolsón', $this->errorFromException->message());
-        $this->assertSame('Bilbo Bolsón', $this->errorWithMessage->message());
+        self::assertSame('', $this->emptyError->message());
+        self::assertSame('Frodo Bolsón', $this->errorFromException->message());
+        self::assertSame('Bilbo Bolsón', $this->errorWithMessage->message());
     }
 
     public function testResultValue(): void
     {
-        $this->assertFalse($this->emptyError->hasValue());
-        $this->assertFalse($this->errorFromException->hasValue());
-        $this->assertFalse($this->errorWithMessage->hasValue());
+        self::assertFalse($this->emptyError->hasValue());
+        self::assertFalse($this->errorFromException->hasValue());
+        self::assertFalse($this->errorWithMessage->hasValue());
 
-        $this->assertNull($this->emptyError->value());
-        $this->assertNull($this->errorFromException->value());
-        $this->assertNull($this->errorWithMessage->value());
+        self::assertNull($this->emptyError->value());
+        self::assertNull($this->errorFromException->value());
+        self::assertNull($this->errorWithMessage->value());
     }
 
     public function testBooleanOperations(): void
     {
-        $this->assertTrue($this->emptyError->or(true));
-        $this->assertTrue($this->errorFromException->or(true));
-        $this->assertTrue($this->errorWithMessage->or(true));
+        self::assertTrue($this->emptyError->or(true));
+        self::assertTrue($this->errorFromException->or(true));
+        self::assertTrue($this->errorWithMessage->or(true));
 
-        $this->assertNull($this->emptyError->orNull());
-        $this->assertNull($this->errorFromException->orNull());
-        $this->assertNull($this->errorWithMessage->orNull());
+        self::assertNull($this->emptyError->orNull());
+        self::assertNull($this->errorFromException->orNull());
+        self::assertNull($this->errorWithMessage->orNull());
 
-        $this->assertException(
+        self::assertException(
             RuntimeException::class,
             fn () => $this->emptyError->orFail(),
         );
-        $this->assertException(
+        self::assertException(
             LogicException::class,
             fn () => $this->errorFromException->orFail(),
         );
-        $this->assertException(
+        self::assertException(
             RuntimeException::class,
             fn () => $this->errorWithMessage->orFail(),
         );
 
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             '',
             fn () => $this->emptyError->orFail(),
         );
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             'Frodo Bolsón',
             fn () => $this->errorFromException->orFail(),
         );
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             'Bilbo Bolsón',
             fn () => $this->errorWithMessage->orFail(),
         );
 
-        $this->assertException(
+        self::assertException(
             UnexpectedValueException::class,
             fn () => $this->emptyError->orThrow(new UnexpectedValueException()),
         );
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             'The result was an error',
             fn () => $this->errorFromException->orThrow(new UnexpectedValueException('The result was an error')),
         );
-        $this->assertExceptionMessage(
+        self::assertExceptionMessage(
             'The result was an error',
             fn () => $this->errorWithMessage->orThrow(new UnexpectedValueException('The result was an error')),
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->emptyError->orElse($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorFromException->orElse($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorWithMessage->orElse($this->ok)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyError,
             $this->emptyError->andThen($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorFromException,
             $this->errorFromException->andThen($this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorWithMessage,
             $this->errorWithMessage->andThen($this->ok)
         );
@@ -165,54 +165,54 @@ final class ErrorTest extends TestCase
 
     public function testBooleanOperationsWithClosures(): void
     {
-        $this->assertTrue(
+        self::assertTrue(
             $this->emptyError->or(function () {
                 return true;
             })
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->errorFromException->or(function () {
                 return true;
             })
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->errorWithMessage->or(function () {
                 return true;
             })
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->emptyError->orElse(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorFromException->orElse(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorWithMessage->orElse(function () {
                 return $this->ok;
             })
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyError,
             $this->emptyError->andThen(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorFromException,
             $this->errorFromException->andThen(function () {
                 return $this->ok;
             })
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorWithMessage,
             $this->errorWithMessage->andThen(function () {
                 return $this->ok;
@@ -222,46 +222,82 @@ final class ErrorTest extends TestCase
 
     public function testBooleanOperationsWithArrowFunctions(): void
     {
-        $this->assertTrue(
+        self::assertTrue(
             $this->emptyError->or(fn () => true)
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->errorFromException->or(fn () => true)
         );
-        $this->assertTrue(
+        self::assertTrue(
             $this->errorWithMessage->or(fn () => true)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->emptyError->orElse(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorFromException->orElse(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->ok,
             $this->errorWithMessage->orElse(fn () => $this->ok)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $this->emptyError,
             $this->emptyError->andThen(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorFromException,
             $this->errorFromException->andThen(fn () => $this->ok)
         );
-        $this->assertSame(
+        self::assertSame(
             $this->errorWithMessage,
             $this->errorWithMessage->andThen(fn () => $this->ok)
         );
     }
 
+    public function testActions(): void
+    {
+        self::assertSame(
+            $this->emptyError,
+            $this->emptyError->onSuccess(fn () => throw new Exception())
+        );
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->emptyError->onFailure(fn () => throw new Exception());
+            }
+        );
+
+        self::assertSame(
+            $this->errorFromException,
+            $this->errorFromException->onSuccess(fn () => throw new Exception())
+        );
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->errorFromException->onFailure(fn () => throw new Exception());
+            }
+        );
+
+        self::assertSame(
+            $this->errorWithMessage,
+            $this->errorWithMessage->onSuccess(fn () => throw new Exception())
+        );
+        self::assertException(
+            Exception::class,
+            function () {
+                $this->errorWithMessage->onFailure(fn () => throw new Exception());
+            }
+        );
+    }
+
     public function testUnusedException(): void
     {
-        $this->assertException(
+        self::assertException(
             UnusedResult::class,
             function () {
                 $result = Error::empty();
@@ -271,7 +307,7 @@ final class ErrorTest extends TestCase
             }
         );
 
-        $this->assertException(
+        self::assertException(
             UnusedResult::class,
             function () {
                 Error::empty();

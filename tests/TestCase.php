@@ -16,14 +16,14 @@ abstract class TestCase extends PHPUnitTestCase
     /**
      * @param class-string<Throwable> $expectedException
      */
-    public function assertException(
+    public static function assertException(
         string $expectedException,
         callable $callback
     ) {
         try {
             $callback();
         } catch (Throwable $exception) {
-            $this->assertThat(
+            static::assertThat(
                 $exception,
                 new ExceptionConstraint(
                     $expectedException
@@ -33,7 +33,7 @@ abstract class TestCase extends PHPUnitTestCase
             return;
         }
 
-        $this->assertThat(
+        static::assertThat(
             null,
             new ExceptionConstraint(
                 $expectedException
@@ -41,7 +41,7 @@ abstract class TestCase extends PHPUnitTestCase
         );
     }
 
-    public function assertExceptionCode(
+    public static function assertExceptionCode(
         int|string $expectedCode,
         callable $callback
     ) {
@@ -50,7 +50,7 @@ abstract class TestCase extends PHPUnitTestCase
         } catch (Throwable $exception) {
         }
 
-        $this->assertThat(
+        static::assertThat(
             $exception ?? null,
             new ExceptionCode(
                 $expectedCode
@@ -58,7 +58,7 @@ abstract class TestCase extends PHPUnitTestCase
         );
     }
 
-    public function assertExceptionMessage(
+    public static function assertExceptionMessage(
         string $expectedMessage,
         callable $callback
     ) {
@@ -68,7 +68,7 @@ abstract class TestCase extends PHPUnitTestCase
             return;
         }
 
-        $this->assertThat(
+        static::assertThat(
             $exception ?? null,
             new ExceptionMessage(
                 $expectedMessage
@@ -76,7 +76,7 @@ abstract class TestCase extends PHPUnitTestCase
         );
     }
 
-    public function assertExceptionMessageMatches(
+    public static function assertExceptionMessageMatches(
         string $regularExpression,
         callable $callback
     ) {
@@ -85,7 +85,7 @@ abstract class TestCase extends PHPUnitTestCase
         } catch (Throwable $exception) {
         }
 
-        $this->assertThat(
+        static::assertThat(
             $exception ?? null,
             new ExceptionMessageRegularExpression(
                 $regularExpression

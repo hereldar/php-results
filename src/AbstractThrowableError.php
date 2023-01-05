@@ -101,6 +101,32 @@ abstract class AbstractThrowableError extends Exception implements IResult
     }
 
     /**
+     * @param Closure($this):void $action
+     *
+     * @return $this
+     */
+    public function onFailure(Closure $action): static
+    {
+        $this->used = true;
+
+        $action($this);
+
+        return $this;
+    }
+
+    /**
+     * @param Closure(null):void $action
+     *
+     * @return $this
+     */
+    public function onSuccess(Closure $action): static
+    {
+        $this->used = true;
+
+        return $this;
+    }
+
+    /**
      * @template U
      *
      * @param U|Closure():U $value
