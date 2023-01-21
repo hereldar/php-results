@@ -11,6 +11,7 @@ use Hereldar\Results\Interfaces\IResult;
 
 /**
  * @extends AbstractResult<null, IAggregateException>
+ *
  * @implements IAggregateResult<null, IAggregateException>
  */
 class AggregateResult extends AbstractResult implements IAggregateResult
