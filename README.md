@@ -1,6 +1,16 @@
 Results
 =======
 
+[![Latest Version][packagist-version-badge]][packagist-url]
+[![Total Downloads][packagist-downloads-badge]][packagist-url]
+[![MIT Licensed][license-badge]][license-url]
+
+[packagist-url]: https://packagist.org/packages/hereldar/results
+[packagist-version-badge]: https://img.shields.io/packagist/v/hereldar/results.svg?style=flat-square
+[packagist-downloads-badge]: https://img.shields.io/packagist/dt/hereldar/results.svg?style=flat-square
+[license-url]: LICENSE
+[license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+
 This package includes an opinionated version of the `Result` type of Rust. It is 
 not intended to replicate the original type one-to-one, but to allow developers 
 to handle the results in any way they choose.
