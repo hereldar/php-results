@@ -32,7 +32,7 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           path-to-lcov: "./build/logs/clover.xml"
-          flag-name: run-php-${{ php-version }}
+          flag-name: run-php-${{ matrix.php-version }}
           parallel: true
 
   coveralls:
