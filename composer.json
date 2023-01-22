@@ -11,7 +11,8 @@
     "authors": [
         {
             "name": "Samuel Maudo",
-            "email": "samuelmaudo@gmail.com"
+            "email": "samuelmaudo@gmail.com",
+            "homepage": "https://github.com/samuelmaudo"
         }
     ],
     "require": {

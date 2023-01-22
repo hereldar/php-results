@@ -6,8 +6,13 @@
     colors="true"
 >
   <testsuites>
-    <testsuite name="all">
+    <testsuite name="unit">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+  <coverage cacheDirectory="build/cache/coverage" pathCoverage="true">
+    <report>
+      <clover outputFile="build/logs/clover.xml"/>
+    </report>
+  </coverage>
 </phpunit>

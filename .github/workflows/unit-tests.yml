@@ -1,0 +1,46 @@
+name: unit-tests
+
+on: [pull_request, push]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.2']
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: Run PHPUnit
+        run: |
+          set -e && composer phpunit
+
+      - name: Collect coverage data
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: "./build/logs/clover.xml"
+          flag-name: run-php-${{ php-version }}
+          parallel: true
+
+  coveralls:
+    needs: ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send coverage data
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
