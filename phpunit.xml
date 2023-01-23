@@ -11,6 +11,9 @@
     </testsuite>
   </testsuites>
   <coverage cacheDirectory="build/cache/coverage" pathCoverage="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
     <report>
       <clover outputFile="build/logs/clover.xml"/>
     </report>
