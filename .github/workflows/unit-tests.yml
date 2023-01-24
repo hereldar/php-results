@@ -27,20 +27,9 @@ jobs:
         run: |
           set -e && composer phpunit
 
-      - name: Collect coverage data
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          path-to-lcov: "./coverage/report.cov"
-          flag-name: php-${{ matrix.php-version }}
-          parallel: true
-
-  coveralls:
-    needs: ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send coverage data
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel-finished: true
+      - if: ${{ matrix.php-version == '8.1' }}
+        name: Send coverage results to Coveralls
+        run: |
+          set -e && composer coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
