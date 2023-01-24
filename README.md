@@ -4,12 +4,15 @@ Results
 [![Latest Version][packagist-version-badge]][packagist-url]
 [![Total Downloads][packagist-downloads-badge]][packagist-url]
 [![MIT Licensed][license-badge]][license-url]
+[![Coverage Status][coveralls-badge]][coveralls-url]
 
-[packagist-url]: https://packagist.org/packages/hereldar/results
 [packagist-version-badge]: https://img.shields.io/packagist/v/hereldar/results.svg?style=flat-square
 [packagist-downloads-badge]: https://img.shields.io/packagist/dt/hereldar/results.svg?style=flat-square
-[license-url]: LICENSE
+[packagist-url]: https://packagist.org/packages/hereldar/results
 [license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[license-url]: LICENSE
+[coveralls-badge]: https://img.shields.io/coverallsCoverage/github/hereldar/php-results?style=flat-square
+[coveralls-url]: https://coveralls.io/github/hereldar/php-results
 
 This package includes an opinionated version of the `Result` type of Rust. It is 
 not intended to replicate the original type one-to-one, but to allow developers 
