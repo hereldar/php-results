@@ -10,12 +10,12 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <coverage cacheDirectory="build/cache/coverage" pathCoverage="true">
+  <coverage cacheDirectory="coverage/cache" pathCoverage="true">
     <include>
       <directory suffix=".php">src</directory>
     </include>
     <report>
-      <php outputFile="build/reports/coverage.cov"/>
+      <php outputFile="coverage/report.cov"/>
     </report>
   </coverage>
 </phpunit>

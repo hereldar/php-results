@@ -31,7 +31,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: "./build/reports/coverage.cov"
+          path-to-lcov: "./coverage/report.cov"
           flag-name: php-${{ matrix.php-version }}
           parallel: true
 
