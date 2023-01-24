@@ -40,7 +40,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "coveralls": "php vendor/bin/php-coveralls --coverage_clover=coverage/report.xml -v",
+        "coveralls": "php vendor/bin/php-coveralls -v",
         "phpcs": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run",
         "phpstan": "tools/phpstan/vendor/bin/phpstan analyse --configuration phpstan.neon",
         "phpunit": "vendor/bin/phpunit --verbose",
