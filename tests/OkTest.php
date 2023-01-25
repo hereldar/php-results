@@ -10,9 +10,6 @@ use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
 use UnexpectedValueException;
 
-/**
- * @covers \Hereldar\Results\Ok
- */
 final class OkTest extends TestCase
 {
     private Ok $emptyOk;
@@ -206,7 +203,7 @@ final class OkTest extends TestCase
     {
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 $result = Ok::empty();
                 unset($result);
 
@@ -216,7 +213,7 @@ final class OkTest extends TestCase
 
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 Ok::empty();
             }
         );

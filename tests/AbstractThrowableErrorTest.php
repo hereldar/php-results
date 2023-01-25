@@ -15,9 +15,6 @@ class CustomError extends AbstractThrowableError
 {
 }
 
-/**
- * @covers \Hereldar\Results\AbstractThrowableError
- */
 final class AbstractThrowableErrorTest extends TestCase
 {
     private CustomError $emptyError;
@@ -224,7 +221,7 @@ final class AbstractThrowableErrorTest extends TestCase
     {
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 $result = new CustomError();
                 unset($result);
 
@@ -234,7 +231,7 @@ final class AbstractThrowableErrorTest extends TestCase
 
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 new CustomError();
             }
         );

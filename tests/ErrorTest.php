@@ -12,9 +12,6 @@ use LogicException;
 use RuntimeException;
 use UnexpectedValueException;
 
-/**
- * @covers \Hereldar\Results\Error
- */
 final class ErrorTest extends TestCase
 {
     private Error $emptyError;
@@ -299,7 +296,7 @@ final class ErrorTest extends TestCase
     {
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 $result = Error::empty();
                 unset($result);
 
@@ -309,7 +306,7 @@ final class ErrorTest extends TestCase
 
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 Error::empty();
             }
         );

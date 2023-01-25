@@ -19,22 +19,13 @@ abstract class TestCase extends PHPUnitTestCase
     public static function assertException(
         string $expectedException,
         callable $callback
-    ) {
+    ): void {
         try {
             $callback();
         } catch (Throwable $exception) {
-            static::assertThat(
-                $exception,
-                new ExceptionConstraint(
-                    $expectedException
-                )
-            );
-
-            return;
         }
-
         static::assertThat(
-            null,
+            $exception ?? null,
             new ExceptionConstraint(
                 $expectedException
             )
@@ -44,12 +35,11 @@ abstract class TestCase extends PHPUnitTestCase
     public static function assertExceptionCode(
         int|string $expectedCode,
         callable $callback
-    ) {
+    ): void {
         try {
             $callback();
         } catch (Throwable $exception) {
         }
-
         static::assertThat(
             $exception ?? null,
             new ExceptionCode(
@@ -61,13 +51,11 @@ abstract class TestCase extends PHPUnitTestCase
     public static function assertExceptionMessage(
         string $expectedMessage,
         callable $callback
-    ) {
+    ): void {
         try {
             $callback();
         } catch (Throwable $exception) {
-            return;
         }
-
         static::assertThat(
             $exception ?? null,
             new ExceptionMessage(
@@ -79,12 +67,11 @@ abstract class TestCase extends PHPUnitTestCase
     public static function assertExceptionMessageMatches(
         string $regularExpression,
         callable $callback
-    ) {
+    ): void {
         try {
             $callback();
         } catch (Throwable $exception) {
         }
-
         static::assertThat(
             $exception ?? null,
             new ExceptionMessageRegularExpression(

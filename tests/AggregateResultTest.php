@@ -13,11 +13,6 @@ use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Ok;
 use UnexpectedValueException;
 
-/**
- * @covers \Hereldar\Results\AbstractResult
- * @covers \Hereldar\Results\AggregateResult
- * @covers \Hereldar\Results\Exceptions\AggregateException
- */
 final class AggregateResultTest extends TestCase
 {
     private Error $error;
@@ -386,7 +381,7 @@ final class AggregateResultTest extends TestCase
     {
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 $result = new AggregateResult();
                 unset($result);
 
@@ -396,7 +391,7 @@ final class AggregateResultTest extends TestCase
 
         self::assertException(
             UnusedResult::class,
-            function () {
+            static function () {
                 AggregateResult::empty();
             }
         );
