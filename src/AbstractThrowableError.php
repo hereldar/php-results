@@ -204,7 +204,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure():F $exception
+     * @param F|Closure(Throwable):F $exception
      *
      * @throws F
      */
@@ -213,7 +213,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
         $this->used = true;
 
         if ($exception instanceof Closure) {
-            throw $exception();
+            throw $exception($this);
         }
 
         throw $exception;

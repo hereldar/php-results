@@ -222,7 +222,7 @@ final class Ok implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure():F $exception
+     * @param F|Closure(null):F $exception
      *
      * @return T
      */

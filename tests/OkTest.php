@@ -76,6 +76,9 @@ final class OkTest extends TestCase
         self::assertNull($this->emptyOk->or(true));
         self::assertSame(42, $this->okWithValue->or(true));
 
+        self::assertNull($this->emptyOk->orFalse());
+        self::assertSame(42, $this->okWithValue->orFalse());
+
         self::assertNull($this->emptyOk->orNull());
         self::assertSame(42, $this->okWithValue->orNull());
 
@@ -84,6 +87,9 @@ final class OkTest extends TestCase
 
         self::assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
         self::assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
+
+        self::assertNull($this->emptyOk->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
+        self::assertSame(42, $this->okWithValue->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
 
         self::assertSame(
             $this->emptyOk,

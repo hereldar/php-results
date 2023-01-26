@@ -90,6 +90,10 @@ final class ErrorTest extends TestCase
         self::assertTrue($this->errorFromException->or(true));
         self::assertTrue($this->errorWithMessage->or(true));
 
+        self::assertFalse($this->emptyError->orFalse());
+        self::assertFalse($this->errorFromException->orFalse());
+        self::assertFalse($this->errorWithMessage->orFalse());
+
         self::assertNull($this->emptyError->orNull());
         self::assertNull($this->errorFromException->orNull());
         self::assertNull($this->errorWithMessage->orNull());
@@ -131,6 +135,19 @@ final class ErrorTest extends TestCase
         self::assertExceptionMessage(
             'The result was an error',
             fn () => $this->errorWithMessage->orThrow(new UnexpectedValueException('The result was an error')),
+        );
+
+        self::assertException(
+            UnexpectedValueException::class,
+            fn () => $this->emptyError->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)),
+        );
+        self::assertExceptionMessage(
+            'The result was an error',
+            fn () => $this->errorFromException->orThrow(fn ($e) => new UnexpectedValueException('The result was an error', previous: $e)),
+        );
+        self::assertExceptionMessage(
+            'The result was an error',
+            fn () => $this->errorWithMessage->orThrow(fn ($e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
 
         self::assertSame(

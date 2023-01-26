@@ -236,7 +236,7 @@ final class Error implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure():F $exception
+     * @param F|Closure(Throwable):F $exception
      *
      * @throws F
      */
@@ -245,7 +245,7 @@ final class Error implements IResult
         $this->used = true;
 
         if ($exception instanceof Closure) {
-            throw $exception();
+            throw $exception($this->exception);
         }
 
         throw $exception;

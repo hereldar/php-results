@@ -11,6 +11,7 @@ use Hereldar\Results\Exceptions\AggregateException;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IAggregateException;
 use Hereldar\Results\Ok;
+use Throwable;
 use UnexpectedValueException;
 
 final class AggregateResultTest extends TestCase
@@ -109,6 +110,11 @@ final class AggregateResultTest extends TestCase
         self::assertTrue($this->resultWithErrors->or(true));
         self::assertTrue($this->resultWithErrorsAndOks->or(true));
 
+        self::assertNull($this->emptyResult->orFalse());
+        self::assertNull($this->resultWithOks->orFalse());
+        self::assertFalse($this->resultWithErrors->orFalse());
+        self::assertFalse($this->resultWithErrorsAndOks->orFalse());
+
         self::assertNull($this->emptyResult->orNull());
         self::assertNull($this->resultWithOks->orNull());
         self::assertNull($this->resultWithErrors->orNull());
@@ -134,6 +140,17 @@ final class AggregateResultTest extends TestCase
         self::assertExceptionMessage(
             'The result was an error',
             fn () => $this->resultWithErrorsAndOks->orThrow(new UnexpectedValueException('The result was an error')),
+        );
+
+        self::assertNull($this->emptyResult->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
+        self::assertNull($this->resultWithOks->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
+        self::assertException(
+            UnexpectedValueException::class,
+            fn () => $this->resultWithErrors->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)),
+        );
+        self::assertExceptionMessage(
+            'The result was an error',
+            fn () => $this->resultWithErrorsAndOks->orThrow(fn ($e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
 
         self::assertSame(

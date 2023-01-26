@@ -161,7 +161,7 @@ interface IResult
      *
      * @template F of Throwable
      *
-     * @param F|Closure():F $exception
+     * @param F|Closure(?Throwable):F $exception
      *
      * @throws F
      *
