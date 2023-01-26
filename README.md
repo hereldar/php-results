@@ -1,18 +1,21 @@
 Results
 =======
 
-[![Latest Version][packagist-version-badge]][packagist-url]
-[![Total Downloads][packagist-downloads-badge]][packagist-url]
-[![MIT Licensed][license-badge]][license-url]
-[![Coverage Status][coveralls-badge]][coveralls-url]
+[![PHP][php-badge]][php-url]
+[![Coverage][coveralls-badge]][coveralls-url]
+[![License][license-badge]][license-url]
+[![Packagist][packagist-version-badge]][packagist-url]
+[![Downloads][packagist-downloads-badge]][packagist-url]
 
-[packagist-version-badge]: https://img.shields.io/packagist/v/hereldar/results.svg?style=flat-square
-[packagist-downloads-badge]: https://img.shields.io/packagist/dt/hereldar/results.svg?style=flat-square
-[packagist-url]: https://packagist.org/packages/hereldar/results
-[license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[license-url]: LICENSE
-[coveralls-badge]: https://img.shields.io/coverallsCoverage/github/hereldar/php-results?style=flat-square
+[php-badge]: https://img.shields.io/badge/php-8.1%20to%208.2-777bb3.svg
+[php-url]: https://coveralls.io/github/hereldar/php-results
+[coveralls-badge]: https://img.shields.io/coverallsCoverage/github/hereldar/php-results
 [coveralls-url]: https://coveralls.io/github/hereldar/php-results
+[license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg
+[license-url]: LICENSE
+[packagist-version-badge]: https://img.shields.io/packagist/v/hereldar/results.svg
+[packagist-downloads-badge]: https://img.shields.io/packagist/dt/hereldar/results.svg
+[packagist-url]: https://packagist.org/packages/hereldar/results
 
 This package includes an opinionated version of the `Result` type of Rust. It is 
 not intended to replicate the original type one-to-one, but to allow developers 

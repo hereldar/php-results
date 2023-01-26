@@ -12,6 +12,7 @@ composer.phar
 
 # Tests
 coverage
+phpunit.xml
 
 # Others
 *.cache
