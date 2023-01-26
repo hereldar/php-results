@@ -2,13 +2,15 @@ Results
 =======
 
 [![PHP][php-badge]][php-url]
-[![Coverage][coveralls-badge]][coveralls-url]
+[![Coverage][codecov-badge]][codecov-url]
 [![License][license-badge]][license-url]
 [![Packagist][packagist-version-badge]][packagist-url]
 [![Downloads][packagist-downloads-badge]][packagist-url]
 
 [php-badge]: https://img.shields.io/badge/php-8.1%20to%208.2-777bb3.svg
 [php-url]: https://coveralls.io/github/hereldar/php-results
+[codecov-badge]: https://img.shields.io/codecov/c/github/hereldar/php-results
+[codecov-url]: https://app.codecov.io/gh/hereldar/php-results
 [coveralls-badge]: https://img.shields.io/coverallsCoverage/github/hereldar/php-results
 [coveralls-url]: https://coveralls.io/github/hereldar/php-results
 [license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg
