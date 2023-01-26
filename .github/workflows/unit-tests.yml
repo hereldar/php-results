@@ -61,7 +61,7 @@ jobs:
 
       - name: Send coverage results to Coveralls
         run: |
-          php-coveralls --root_dir=src --coverage_clover=coverage/clover.xml --json_path=coverage/coveralls-upload.json --verbose
+          php-coveralls --coverage_clover=coverage/clover.xml --json_path=coverage/coveralls-upload.json --verbose
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_NAME: github
