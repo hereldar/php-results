@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use Hereldar\Results\Exceptions\MissingException;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use Throwable;
 
 /**
  * @template T
- * @template E of Throwable
+ * @template E of Throwable|null
  *
  * @implements IResult<T, E>
  */
@@ -23,7 +22,7 @@ abstract class AbstractResult implements IResult
 
     /**
      * @param T $value
-     * @param E|null $exception
+     * @param E $exception
      */
     public function __construct(
         protected readonly mixed $value = null,
@@ -41,19 +40,20 @@ abstract class AbstractResult implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure(T|null):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
      * @return $this|IResult<U, F>
      */
     public function andThen(IResult|Closure $result): static|IResult
     {
-        if ($this->isError()) {
+        if ($this->exception !== null) {
             return $this;
         }
 
         if ($result instanceof Closure) {
+            /** @var IResult<U, F> */
             return $result($this->value);
         }
 
@@ -61,20 +61,31 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @return E|null
+     * @return E
      */
-    public function exception(): ?Throwable
+    final public function exception(): ?Throwable
     {
         $this->used = true;
 
         return $this->exception;
     }
 
-    public function hasException(): bool
+    /**
+     * @phpstan-assert-if-true Throwable $this->exception
+     * @phpstan-assert-if-true Throwable $this->exception()
+     * @phpstan-assert-if-false null $this->exception
+     * @phpstan-assert-if-false null $this->exception()
+     *
+     * @psalm-assert-if-true Throwable $this->exception
+     * @psalm-assert-if-true Throwable $this->exception()
+     * @psalm-assert-if-false null $this->exception
+     * @psalm-assert-if-false null $this->exception()
+     */
+    final public function hasException(): bool
     {
         $this->used = true;
 
-        return isset($this->exception);
+        return ($this->exception !== null);
     }
 
     public function hasMessage(): bool
@@ -89,14 +100,36 @@ abstract class AbstractResult implements IResult
         return ($this->value !== null);
     }
 
-    public function isError(): bool
+    /**
+     * @phpstan-assert-if-true Throwable $this->exception
+     * @phpstan-assert-if-true Throwable $this->exception()
+     * @phpstan-assert-if-false null $this->exception
+     * @phpstan-assert-if-false null $this->exception()
+     *
+     * @psalm-assert-if-true Throwable $this->exception
+     * @psalm-assert-if-true Throwable $this->exception()
+     * @psalm-assert-if-false null $this->exception
+     * @psalm-assert-if-false null $this->exception()
+     */
+    final public function isError(): bool
     {
         $this->used = true;
 
         return ($this->exception !== null);
     }
 
-    public function isOk(): bool
+    /**
+     * @phpstan-assert-if-true null $this->exception
+     * @phpstan-assert-if-true null $this->exception()
+     * @phpstan-assert-if-false Throwable $this->exception
+     * @phpstan-assert-if-false Throwable $this->exception()
+     *
+     * @psalm-assert-if-true null $this->exception
+     * @psalm-assert-if-true null $this->exception()
+     * @psalm-assert-if-false Throwable $this->exception
+     * @psalm-assert-if-false Throwable $this->exception()
+     */
+    final public function isOk(): bool
     {
         $this->used = true;
 
@@ -115,13 +148,13 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @param Closure(E):void $action
+     * @param Closure(E=):void $action
      *
      * @return $this
      */
     public function onFailure(Closure $action): static
     {
-        if ($this->isError()) {
+        if ($this->exception !== null) {
             $action($this->exception);
         }
 
@@ -129,13 +162,13 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @param Closure(T):void $action
+     * @param Closure(T=):void $action
      *
      * @return $this
      */
     public function onSuccess(Closure $action): static
     {
-        if ($this->isOk()) {
+        if (null === $this->exception) {
             $action($this->value);
         }
 
@@ -145,18 +178,19 @@ abstract class AbstractResult implements IResult
     /**
      * @template U
      *
-     * @param U|Closure():U $value
+     * @param U|Closure(T=):U $value
      *
      * @return T|U
      */
     public function or(mixed $value): mixed
     {
-        if ($this->isOk()) {
+        if (null === $this->exception) {
             return $this->value;
         }
 
         if ($value instanceof Closure) {
-            return $value();
+            /** @var U */
+            return $value($this->value);
         }
 
         return $value;
@@ -167,33 +201,34 @@ abstract class AbstractResult implements IResult
      */
     public function orDie(int|string $status = null): mixed
     {
-        if ($this->isOk()) {
+        if (null === $this->exception) {
             return $this->value;
         }
 
-        if (isset($status)) {
+        if ($status !== null) {
             exit($status);
-        } else {
-            exit;
         }
+
+        exit;
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
      * @return $this|IResult<U, F>
      */
     public function orElse(IResult|Closure $result): static|IResult
     {
-        if ($this->isOk()) {
+        if (null === $this->exception) {
             return $this;
         }
 
         if ($result instanceof Closure) {
-            return $result();
+            /** @var IResult<U, F> */
+            return $result($this->value);
         }
 
         return $result;
@@ -206,15 +241,11 @@ abstract class AbstractResult implements IResult
      */
     public function orFail(): mixed
     {
-        if ($this->isOk()) {
-            return $this->value;
+        if ($this->exception !== null) {
+            throw $this->exception;
         }
 
-        if (null === $this->exception) {
-            throw new MissingException($this);
-        }
-
-        throw $this->exception;
+        return $this->value;
     }
 
     /**
@@ -222,11 +253,11 @@ abstract class AbstractResult implements IResult
      */
     public function orFalse(): mixed
     {
-        if ($this->isOk()) {
-            return $this->value;
+        if ($this->exception !== null) {
+            return false;
         }
 
-        return false;
+        return $this->value;
     }
 
     /**
@@ -234,17 +265,17 @@ abstract class AbstractResult implements IResult
      */
     public function orNull(): mixed
     {
-        if ($this->isOk()) {
-            return $this->value;
+        if ($this->exception !== null) {
+            return null;
         }
 
-        return null;
+        return $this->value;
     }
 
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(?Throwable):F $exception
+     * @param F|Closure(E=):F $exception
      *
      * @throws F
      *
@@ -252,7 +283,7 @@ abstract class AbstractResult implements IResult
      */
     public function orThrow(Throwable|Closure $exception): mixed
     {
-        if ($this->isOk()) {
+        if (null === $this->exception) {
             return $this->value;
         }
 
@@ -264,7 +295,7 @@ abstract class AbstractResult implements IResult
     }
 
     /**
-     * @return T|null
+     * @return T
      */
     public function value(): mixed
     {
