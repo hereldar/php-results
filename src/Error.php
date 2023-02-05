@@ -11,10 +11,9 @@ use RuntimeException;
 use Throwable;
 
 /**
- * @template T
  * @template E of Throwable
  *
- * @implements IResult<T, E>
+ * @implements IResult<null, E>
  */
 final class Error implements IResult
 {
@@ -38,7 +37,7 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<T, RuntimeException>
+     * @return self<RuntimeException>
      */
     public static function empty(): self
     {
@@ -50,7 +49,7 @@ final class Error implements IResult
      *
      * @param F $exception
      *
-     * @return self<T, F>
+     * @return self<F>
      */
     public static function withException(Throwable $exception): self
     {
@@ -58,7 +57,7 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<T, RuntimeException>
+     * @return self<RuntimeException>
      */
     public static function withMessage(string $message): self
     {
@@ -67,9 +66,9 @@ final class Error implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure(null):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
      *
      * @return $this
      */
@@ -90,6 +89,9 @@ final class Error implements IResult
         return $this->exception;
     }
 
+    /**
+     * @return true
+     */
     public function hasException(): bool
     {
         $this->used = true;
@@ -104,6 +106,9 @@ final class Error implements IResult
         return ($this->exception->getMessage() !== '');
     }
 
+    /**
+     * @return false
+     */
     public function hasValue(): bool
     {
         $this->used = true;
@@ -111,6 +116,9 @@ final class Error implements IResult
         return false;
     }
 
+    /**
+     * @return true
+     */
     public function isError(): bool
     {
         $this->used = true;
@@ -118,6 +126,9 @@ final class Error implements IResult
         return true;
     }
 
+    /**
+     * @return false
+     */
     public function isOk(): bool
     {
         $this->used = true;
@@ -133,7 +144,7 @@ final class Error implements IResult
     }
 
     /**
-     * @param Closure(E):void $action
+     * @param Closure(E=):void $action
      *
      * @return $this
      */
@@ -147,7 +158,7 @@ final class Error implements IResult
     }
 
     /**
-     * @param Closure(T):void $action
+     * @param Closure(null=):void $action
      *
      * @return $this
      */
@@ -161,7 +172,7 @@ final class Error implements IResult
     /**
      * @template U
      *
-     * @param U|Closure():U $value
+     * @param U|Closure(null=):U $value
      *
      * @return U
      */
@@ -170,7 +181,8 @@ final class Error implements IResult
         $this->used = true;
 
         if ($value instanceof Closure) {
-            return $value();
+            /** @var U */
+            return $value(null);
         }
 
         return $value;
@@ -182,16 +194,16 @@ final class Error implements IResult
 
         if (isset($status)) {
             exit($status);
-        } else {
-            exit;
         }
+
+        exit;
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
      *
      * @return IResult<U, F>
      */
@@ -200,7 +212,8 @@ final class Error implements IResult
         $this->used = true;
 
         if ($result instanceof Closure) {
-            return $result();
+            /** @var IResult<U, F> */
+            return $result(null);
         }
 
         return $result;
@@ -226,6 +239,9 @@ final class Error implements IResult
         return false;
     }
 
+    /**
+     * @return null
+     */
     public function orNull(): mixed
     {
         $this->used = true;
@@ -236,7 +252,7 @@ final class Error implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(Throwable):F $exception
+     * @param F|Closure(E=):F $exception
      *
      * @throws F
      */
@@ -251,6 +267,9 @@ final class Error implements IResult
         throw $exception;
     }
 
+    /**
+     * @return null
+     */
     public function value(): mixed
     {
         $this->used = true;
