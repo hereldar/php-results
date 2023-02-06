@@ -11,7 +11,7 @@ use Hereldar\Results\Interfaces\IResult;
 use Throwable;
 
 /**
- * @implements IResult<null, Exception>
+ * @implements IResult<null, AbstractThrowableError>
  */
 abstract class AbstractThrowableError extends Exception implements IResult
 {
@@ -27,7 +27,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     {
         if (!$this->used) {
             $trace = $this->getTraceAsString();
-            $lines = array_slice(explode("\n", $trace), 0, 4);
+            $lines = array_slice(explode("\n", $trace), 0, 5);
 
             throw new UnusedResult($this, implode("\n", $lines));
         }
@@ -35,9 +35,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure(null):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
      *
      * @return $this
      */
@@ -58,6 +58,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return $this;
     }
 
+    /**
+     * @return true
+     */
     final public function hasException(): bool
     {
         $this->used = true;
@@ -72,6 +75,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return ($this->message !== '');
     }
 
+    /**
+     * @return false
+     */
     final public function hasValue(): bool
     {
         $this->used = true;
@@ -79,6 +85,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return false;
     }
 
+    /**
+     * @return true
+     */
     final public function isError(): bool
     {
         $this->used = true;
@@ -86,6 +95,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return true;
     }
 
+    /**
+     * @return false
+     */
     final public function isOk(): bool
     {
         $this->used = true;
@@ -101,7 +113,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     }
 
     /**
-     * @param Closure($this):void $action
+     * @param Closure(static=):void $action
      *
      * @return $this
      */
@@ -115,7 +127,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     }
 
     /**
-     * @param Closure(null):void $action
+     * @param Closure(null=):void $action
      *
      * @return $this
      */
@@ -129,7 +141,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     /**
      * @template U
      *
-     * @param U|Closure():U $value
+     * @param U|Closure(null=):U $value
      *
      * @return U
      */
@@ -138,7 +150,8 @@ abstract class AbstractThrowableError extends Exception implements IResult
         $this->used = true;
 
         if ($value instanceof Closure) {
-            return $value();
+            /** @var U */
+            return $value(null);
         }
 
         return $value;
@@ -150,16 +163,16 @@ abstract class AbstractThrowableError extends Exception implements IResult
 
         if (isset($status)) {
             exit($status);
-        } else {
-            exit;
         }
+
+        exit;
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
      *
      * @return IResult<U, F>
      */
@@ -168,14 +181,15 @@ abstract class AbstractThrowableError extends Exception implements IResult
         $this->used = true;
 
         if ($result instanceof Closure) {
-            return $result();
+            /** @var IResult<U, F> */
+            return $result(null);
         }
 
         return $result;
     }
 
     /**
-     * @throws $this
+     * @throws static
      */
     final public function orFail(): never
     {
@@ -194,6 +208,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         return false;
     }
 
+    /**
+     * @return null
+     */
     final public function orNull(): mixed
     {
         $this->used = true;
@@ -204,7 +221,7 @@ abstract class AbstractThrowableError extends Exception implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(Throwable):F $exception
+     * @param F|Closure(static=):F $exception
      *
      * @throws F
      */
@@ -219,6 +236,9 @@ abstract class AbstractThrowableError extends Exception implements IResult
         throw $exception;
     }
 
+    /**
+     * @return null
+     */
     final public function value(): mixed
     {
         $this->used = true;
