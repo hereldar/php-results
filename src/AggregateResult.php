@@ -10,9 +10,11 @@ use Hereldar\Results\Interfaces\IAggregateResult;
 use Hereldar\Results\Interfaces\IResult;
 
 /**
- * @extends AbstractResult<null, IAggregateException>
+ * @extends AbstractResult<null, ?IAggregateException>
  *
- * @implements IAggregateResult<null, IAggregateException>
+ * @implements IAggregateResult<null, ?IAggregateException>
+ *
+ * @psalm-consistent-constructor
  */
 class AggregateResult extends AbstractResult implements IAggregateResult
 {

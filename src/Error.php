@@ -11,9 +11,10 @@ use RuntimeException;
 use Throwable;
 
 /**
+ * @template T
  * @template E of Throwable
  *
- * @implements IResult<null, E>
+ * @implements IResult<T, E>
  */
 final class Error implements IResult
 {
@@ -23,8 +24,8 @@ final class Error implements IResult
     /**
      * @param E $exception
      */
-    public function __construct(
-        private readonly Throwable $exception
+    private function __construct(
+        private readonly Throwable $exception,
     ) {
         $this->trace = new Backtrace($this::class);
     }
@@ -37,7 +38,9 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<RuntimeException>
+     * @return self<null, RuntimeException>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function empty(): self
     {
@@ -49,7 +52,9 @@ final class Error implements IResult
      *
      * @param F $exception
      *
-     * @return self<F>
+     * @return self<null, F>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withException(Throwable $exception): self
     {
@@ -57,7 +62,9 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<RuntimeException>
+     * @return self<null, RuntimeException>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withMessage(string $message): self
     {
@@ -71,6 +78,8 @@ final class Error implements IResult
      * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
      *
      * @return $this
+     *
+     * @phpstan-ignore-next-line
      */
     public function andThen(IResult|Closure $result): self
     {
@@ -221,6 +230,8 @@ final class Error implements IResult
 
     /**
      * @throws E
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orFail(): never
     {
@@ -255,6 +266,8 @@ final class Error implements IResult
      * @param F|Closure(E=):F $exception
      *
      * @throws F
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orThrow(Throwable|Closure $exception): never
     {

@@ -133,6 +133,8 @@ interface IResult
      * @throws E
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orFail(): mixed;
 
@@ -166,6 +168,8 @@ interface IResult
      * @throws F
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orThrow(Throwable|Closure $exception): mixed;
 

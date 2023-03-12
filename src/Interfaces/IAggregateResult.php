@@ -6,7 +6,7 @@ namespace Hereldar\Results\Interfaces;
 
 /**
  * @template T
- * @template E of IAggregateException
+ * @template E of ?IAggregateException
  *
  * @extends IResult<T, E>
  */

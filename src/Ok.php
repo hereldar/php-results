@@ -11,8 +11,9 @@ use Throwable;
 
 /**
  * @template T
+ * @template E of ?Throwable
  *
- * @implements IResult<T, null>
+ * @implements IResult<T, E>
  */
 final class Ok implements IResult
 {
@@ -22,8 +23,8 @@ final class Ok implements IResult
     /**
      * @param T $value
      */
-    public function __construct(
-        private readonly mixed $value = null,
+    private function __construct(
+        private readonly mixed $value,
     ) {
         $this->trace = new Backtrace($this::class);
     }
@@ -36,10 +37,13 @@ final class Ok implements IResult
     }
 
     /**
-     * @return self<null>
+     * @return self<null, null>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function empty(): self
     {
+        /* @phpstan-ignore-next-line */
         return new self(null);
     }
 
@@ -48,10 +52,13 @@ final class Ok implements IResult
      *
      * @param U $value
      *
-     * @return self<U>
+     * @return self<U, null>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withValue(mixed $value): self
     {
+        /* @phpstan-ignore-next-line */
         return new self($value);
     }
 

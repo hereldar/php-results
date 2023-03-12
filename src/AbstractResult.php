@@ -11,7 +11,7 @@ use Throwable;
 
 /**
  * @template T
- * @template E of Throwable|null
+ * @template E of ?Throwable
  *
  * @implements IResult<T, E>
  */
@@ -238,6 +238,8 @@ abstract class AbstractResult implements IResult
      * @throws E
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orFail(): mixed
     {
@@ -280,6 +282,8 @@ abstract class AbstractResult implements IResult
      * @throws F
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orThrow(Throwable|Closure $exception): mixed
     {
