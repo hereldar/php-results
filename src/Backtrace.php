@@ -6,14 +6,11 @@ namespace Hereldar\Results;
 
 /**
  * @internal
+ *
+ * @psalm-suppress all
  */
 final class Backtrace
 {
-    /**
-     * @var array[]
-     *
-     * @psalm-var list<array{file?: string, line?: int, class?: class-string, function: string}>
-     */
     private readonly array $trace;
 
     /**

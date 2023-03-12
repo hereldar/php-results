@@ -9,7 +9,7 @@ use Throwable;
 
 /**
  * @template T
- * @template E of Throwable
+ * @template E of ?Throwable
  */
 interface IResult
 {
@@ -21,18 +21,18 @@ interface IResult
      * is a success, this method will call it and return its output.
      *
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure(T):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
      * @return $this|IResult<U, F>
      */
-    public function andThen(IResult|Closure $result): static|IResult;
+    public function andThen(IResult|Closure $result): self;
 
     /**
      * Returns the result's exception, if any.
      *
-     * @return E|null
+     * @return E
      */
     public function exception(): ?Throwable;
 
@@ -71,7 +71,7 @@ interface IResult
      * exception if this instance is an error. Returns the original
      * instance unchanged.
      *
-     * @param Closure(E):void $action
+     * @param Closure(E=):void $action
      *
      * @return $this
      */
@@ -81,7 +81,7 @@ interface IResult
      * Performs the given `action` on the encapsulated value if this
      * instance is a success. Returns the original instance unchanged.
      *
-     * @param Closure(T):void $action
+     * @param Closure(T=):void $action
      *
      * @return $this
      */
@@ -96,7 +96,7 @@ interface IResult
      *
      * @template U
      *
-     * @param U|Closure():U $value
+     * @param U|Closure(T=):U $value
      *
      * @return T|U
      */
@@ -118,13 +118,13 @@ interface IResult
      * is an error, this method will call it and return its output.
      *
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
-     * @return $this|IResult<T|U, F>
+     * @return $this|IResult<U, F>
      */
-    public function orElse(IResult|Closure $result): static|IResult;
+    public function orElse(IResult|Closure $result): self;
 
     /**
      * Throws an exception if the result is an error. Otherwise,
@@ -133,6 +133,8 @@ interface IResult
      * @throws E
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orFail(): mixed;
 
@@ -161,18 +163,20 @@ interface IResult
      *
      * @template F of Throwable
      *
-     * @param F|Closure(?Throwable):F $exception
+     * @param F|Closure(E=):F $exception
      *
      * @throws F
      *
      * @return T
+     *
+     * @psalm-suppress UndefinedDocblockClass
      */
     public function orThrow(Throwable|Closure $exception): mixed;
 
     /**
      * Returns the result's value, if any.
      *
-     * @return T|null
+     * @return T
      */
     public function value(): mixed;
 }

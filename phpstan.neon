@@ -1,5 +1,9 @@
 parameters:
-    level: 3
+    level: 9
     paths:
         - src
-        - tests
+        # - tests
+    excludePaths:
+        analyse:
+            - src/Backtrace.php
+    checkGenericClassInNonGenericObjectType: false

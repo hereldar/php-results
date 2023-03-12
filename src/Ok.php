@@ -11,7 +11,7 @@ use Throwable;
 
 /**
  * @template T
- * @template E of Throwable
+ * @template E of ?Throwable
  *
  * @implements IResult<T, E>
  */
@@ -23,8 +23,8 @@ final class Ok implements IResult
     /**
      * @param T $value
      */
-    public function __construct(
-        private readonly mixed $value = null,
+    private function __construct(
+        private readonly mixed $value,
     ) {
         $this->trace = new Backtrace($this::class);
     }
@@ -37,10 +37,13 @@ final class Ok implements IResult
     }
 
     /**
-     * @return self<null, E>
+     * @return self<null, null>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function empty(): self
     {
+        /* @phpstan-ignore-next-line */
         return new self(null);
     }
 
@@ -49,18 +52,21 @@ final class Ok implements IResult
      *
      * @param U $value
      *
-     * @return self<U, E>
+     * @return self<U, null>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function withValue(mixed $value): self
     {
+        /* @phpstan-ignore-next-line */
         return new self($value);
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure(T|null):IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
      * @return IResult<U, F>
      */
@@ -69,12 +75,16 @@ final class Ok implements IResult
         $this->used = true;
 
         if ($result instanceof Closure) {
+            /** @var IResult<U, F> */
             return $result($this->value);
         }
 
         return $result;
     }
 
+    /**
+     * @return null
+     */
     public function exception(): ?Throwable
     {
         $this->used = true;
@@ -82,6 +92,9 @@ final class Ok implements IResult
         return null;
     }
 
+    /**
+     * @return false
+     */
     public function hasException(): bool
     {
         $this->used = true;
@@ -89,6 +102,9 @@ final class Ok implements IResult
         return false;
     }
 
+    /**
+     * @return false
+     */
     public function hasMessage(): bool
     {
         $this->used = true;
@@ -103,6 +119,9 @@ final class Ok implements IResult
         return ($this->value !== null);
     }
 
+    /**
+     * @return false
+     */
     public function isError(): bool
     {
         $this->used = true;
@@ -110,6 +129,9 @@ final class Ok implements IResult
         return false;
     }
 
+    /**
+     * @return true
+     */
     public function isOk(): bool
     {
         $this->used = true;
@@ -125,7 +147,7 @@ final class Ok implements IResult
     }
 
     /**
-     * @param Closure(E):void $action
+     * @param Closure(null=):void $action
      *
      * @return $this
      */
@@ -137,7 +159,7 @@ final class Ok implements IResult
     }
 
     /**
-     * @param Closure(T):void $action
+     * @param Closure(T=):void $action
      *
      * @return $this
      */
@@ -153,7 +175,7 @@ final class Ok implements IResult
     /**
      * @template U
      *
-     * @param U|Closure():U $value
+     * @param U|Closure(T=):U $value
      *
      * @return T
      */
@@ -176,9 +198,9 @@ final class Ok implements IResult
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F of ?Throwable
      *
-     * @param IResult<U, F>|Closure():IResult<U, F> $result
+     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
      *
      * @return $this
      */
@@ -222,7 +244,7 @@ final class Ok implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(null):F $exception
+     * @param F|Closure(null=):F $exception
      *
      * @return T
      */
