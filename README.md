@@ -2,7 +2,8 @@ Results
 =======
 
 [![PHP][php-badge]][php-url]
-[![Coverage][codecov-badge]][codecov-url]
+[![Code Coverage][codecov-badge]][codecov-url]
+[![Type Coverage][shepherd-badge]][shepherd-url]
 [![License][license-badge]][license-url]
 [![Packagist][packagist-version-badge]][packagist-url]
 [![Downloads][packagist-downloads-badge]][packagist-url]
@@ -13,6 +14,8 @@ Results
 [codecov-url]: https://app.codecov.io/gh/hereldar/php-results
 [coveralls-badge]: https://img.shields.io/coverallsCoverage/github/hereldar/php-results
 [coveralls-url]: https://coveralls.io/github/hereldar/php-results
+[shepherd-badge]: https://shepherd.dev/github/hereldar/php-results/coverage.svg
+[shepherd-url]: https://shepherd.dev/github/hereldar/php-results
 [license-badge]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [license-url]: LICENSE
 [packagist-version-badge]: https://img.shields.io/packagist/v/hereldar/results.svg
