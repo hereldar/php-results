@@ -11,9 +11,6 @@ use Throwable;
 
 /**
  * @template T
- * @template E of ?Throwable
- *
- * @implements IResult<T, E>
  */
 final class Ok implements IResult
 {
@@ -37,13 +34,10 @@ final class Ok implements IResult
     }
 
     /**
-     * @return self<null, null>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return self<null>
      */
     public static function empty(): self
     {
-        /* @phpstan-ignore-next-line */
         return new self(null);
     }
 
@@ -52,30 +46,34 @@ final class Ok implements IResult
      *
      * @param U $value
      *
-     * @return self<U, null>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return self<U>
      */
     public static function withValue(mixed $value): self
     {
-        /* @phpstan-ignore-next-line */
         return new self($value);
     }
 
     /**
      * @template U
-     * @template F of ?Throwable
+     * @template F of Throwable
      *
-     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
+     * @param Ok<U>|Error<F>|Closure(T):(Ok<U>|Error<F>) $result
      *
-     * @return IResult<U, F>
+     * @return Ok<U>|Error<F>
+     * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
+     * @psalm-suppress TypeDoesNotContainType
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress InvalidReturnStatement
      */
-    public function andThen(IResult|Closure $result): IResult
+    public function andThen(Ok|Error|Closure $result): Ok|Error
     {
         $this->used = true;
 
         if ($result instanceof Closure) {
-            /** @var IResult<U, F> */
             return $result($this->value);
         }
 
@@ -84,6 +82,8 @@ final class Ok implements IResult
 
     /**
      * @return null
+     *
+     * @psalm-suppress  InvalidReturnStatement
      */
     public function exception(): ?Throwable
     {
@@ -147,7 +147,7 @@ final class Ok implements IResult
     }
 
     /**
-     * @param Closure(null=):void $action
+     * @param Closure(Throwable):void $action
      *
      * @return $this
      */
@@ -159,7 +159,7 @@ final class Ok implements IResult
     }
 
     /**
-     * @param Closure(T=):void $action
+     * @param Closure(T):void $action
      *
      * @return $this
      */
@@ -175,7 +175,7 @@ final class Ok implements IResult
     /**
      * @template U
      *
-     * @param U|Closure(T=):U $value
+     * @param U|Closure(T):U $value
      *
      * @return T
      */
@@ -198,13 +198,15 @@ final class Ok implements IResult
 
     /**
      * @template U
-     * @template F of ?Throwable
+     * @template F of Throwable
      *
-     * @param IResult<U, F>|Closure(T=):IResult<U, F> $result
+     * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *
      * @return $this
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function orElse(IResult|Closure $result): self
+    public function orElse(Ok|Error|Closure $result): static
     {
         $this->used = true;
 
@@ -244,9 +246,11 @@ final class Ok implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(null=):F $exception
+     * @param F|Closure(Throwable):F $exception
      *
      * @return T
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function orThrow(Throwable|Closure $exception): mixed
     {

@@ -11,10 +11,7 @@ use RuntimeException;
 use Throwable;
 
 /**
- * @template T
  * @template E of Throwable
- *
- * @implements IResult<T, E>
  */
 final class Error implements IResult
 {
@@ -38,9 +35,7 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<null, RuntimeException>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return self<RuntimeException>
      */
     public static function empty(): self
     {
@@ -52,9 +47,7 @@ final class Error implements IResult
      *
      * @param F $exception
      *
-     * @return self<null, F>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return self<F>
      */
     public static function withException(Throwable $exception): self
     {
@@ -62,9 +55,7 @@ final class Error implements IResult
     }
 
     /**
-     * @return self<null, RuntimeException>
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return self<RuntimeException>
      */
     public static function withMessage(string $message): self
     {
@@ -73,15 +64,15 @@ final class Error implements IResult
 
     /**
      * @template U
-     * @template F of ?Throwable
+     * @template F of Throwable
      *
-     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
+     * @param Ok<U>|Error<F>|Closure(mixed):(Ok<U>|Error<F>) $result
      *
      * @return $this
      *
-     * @phpstan-ignore-next-line
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function andThen(IResult|Closure $result): self
+    public function andThen(Ok|Error|Closure $result): static
     {
         $this->used = true;
 
@@ -153,7 +144,7 @@ final class Error implements IResult
     }
 
     /**
-     * @param Closure(E=):void $action
+     * @param Closure(E):void $action
      *
      * @return $this
      */
@@ -167,7 +158,7 @@ final class Error implements IResult
     }
 
     /**
-     * @param Closure(null=):void $action
+     * @param Closure(mixed):void $action
      *
      * @return $this
      */
@@ -181,17 +172,19 @@ final class Error implements IResult
     /**
      * @template U
      *
-     * @param U|Closure(null=):U $value
+     * @param U|Closure():U $value
      *
      * @return U
+     *
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
      */
     public function or(mixed $value): mixed
     {
         $this->used = true;
 
         if ($value instanceof Closure) {
-            /** @var U */
-            return $value(null);
+            return $value();
         }
 
         return $value;
@@ -210,19 +203,26 @@ final class Error implements IResult
 
     /**
      * @template U
-     * @template F of ?Throwable
+     * @template F of Throwable
      *
-     * @param IResult<U, F>|Closure(null=):IResult<U, F> $result
+     * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *
-     * @return IResult<U, F>
+     * @return Ok<U>|Error<F>
+     * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
+     * @psalm-suppress TypeDoesNotContainType
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress InvalidReturnStatement
      */
-    public function orElse(IResult|Closure $result): IResult
+    public function orElse(Ok|Error|Closure $result): Ok|Error
     {
         $this->used = true;
 
         if ($result instanceof Closure) {
-            /** @var IResult<U, F> */
-            return $result(null);
+            return $result();
         }
 
         return $result;
@@ -252,6 +252,8 @@ final class Error implements IResult
 
     /**
      * @return null
+     *
+     * @psalm-suppress  InvalidReturnStatement
      */
     public function orNull(): mixed
     {
@@ -263,10 +265,11 @@ final class Error implements IResult
     /**
      * @template F of Throwable
      *
-     * @param F|Closure(E=):F $exception
+     * @param F|Closure(E):F $exception
      *
      * @throws F
      *
+     * @psalm-suppress MoreSpecificImplementedParamType
      * @psalm-suppress UndefinedDocblockClass
      */
     public function orThrow(Throwable|Closure $exception): never
@@ -282,6 +285,8 @@ final class Error implements IResult
 
     /**
      * @return null
+     * 
+     * @psalm-suppress  InvalidReturnStatement
      */
     public function value(): mixed
     {

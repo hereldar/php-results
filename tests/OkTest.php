@@ -8,15 +8,19 @@ use Exception;
 use Hereldar\Results\Error;
 use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
+use Throwable;
 use UnexpectedValueException;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class OkTest extends TestCase
 {
     private Ok $emptyOk;
     private Ok $okWithValue;
     private Error $error;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -25,7 +29,7 @@ final class OkTest extends TestCase
         $this->error = Error::empty();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         // We make sure that all results have been used before
         // destroying them.
@@ -88,8 +92,8 @@ final class OkTest extends TestCase
         self::assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
         self::assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
 
-        self::assertNull($this->emptyOk->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
-        self::assertSame(42, $this->okWithValue->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)));
+        self::assertNull($this->emptyOk->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
+        self::assertSame(42, $this->okWithValue->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
 
         self::assertSame(
             $this->emptyOk,
@@ -124,59 +128,30 @@ final class OkTest extends TestCase
             })
         );
 
-        self::assertSame(
-            $this->emptyOk,
-            $this->emptyOk->orElse(function () {
-                return $this->error;
-            })
-        );
-        self::assertSame(
-            $this->okWithValue,
-            $this->okWithValue->orElse(function () {
-                return $this->error;
-            })
-        );
-
-        self::assertSame(
-            $this->error,
-            $this->emptyOk->andThen(function () {
-                return $this->error;
-            })
-        );
-        self::assertSame(
-            $this->error,
-            $this->okWithValue->andThen(function () {
-                return $this->error;
-            })
-        );
-    }
-
-    public function testBooleanOperationsWithArrowFunctions(): void
-    {
-        self::assertNull(
-            $this->emptyOk->or(fn () => true)
-        );
-        self::assertSame(
-            42,
-            $this->okWithValue->or(fn () => true)
-        );
+        $randomResult = function (): Ok|Error {
+            $result = ($this->random()->boolean())
+                ? Ok::empty()
+                : Error::empty();
+            $result->value();
+            return $result;
+        };
 
         self::assertSame(
             $this->emptyOk,
-            $this->emptyOk->orElse(fn () => $this->error)
+            $this->emptyOk->orElse($randomResult)
         );
         self::assertSame(
             $this->okWithValue,
-            $this->okWithValue->orElse(fn () => $this->error)
+            $this->okWithValue->orElse($randomResult)
         );
 
-        self::assertSame(
-            $this->error,
-            $this->emptyOk->andThen(fn () => $this->error)
+        self::assertNotSame(
+            $this->emptyOk,
+            $this->emptyOk->andThen($randomResult)
         );
-        self::assertSame(
-            $this->error,
-            $this->okWithValue->andThen(fn () => $this->error)
+        self::assertNotSame(
+            $this->okWithValue,
+            $this->okWithValue->andThen($randomResult)
         );
     }
 

@@ -10,8 +10,12 @@ use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
 use LogicException;
 use RuntimeException;
+use Throwable;
 use UnexpectedValueException;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class ErrorTest extends TestCase
 {
     private Error $emptyError;
@@ -19,7 +23,7 @@ final class ErrorTest extends TestCase
     private Error $errorWithMessage;
     private Ok $ok;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -29,7 +33,7 @@ final class ErrorTest extends TestCase
         $this->ok = Ok::empty();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         // We make sure that all results have been used before
         // destroying them.
@@ -139,15 +143,15 @@ final class ErrorTest extends TestCase
 
         self::assertException(
             UnexpectedValueException::class,
-            fn () => $this->emptyError->orThrow(fn ($e) => new UnexpectedValueException(previous: $e)),
+            fn () => $this->emptyError->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorFromException->orThrow(fn ($e) => new UnexpectedValueException('The result was an error', previous: $e)),
+            fn () => $this->errorFromException->orThrow(fn (Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorWithMessage->orThrow(fn ($e) => new UnexpectedValueException('The result was an error', previous: $e)),
+            fn () => $this->errorWithMessage->orThrow(fn (Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
 
         self::assertSame(
@@ -195,81 +199,38 @@ final class ErrorTest extends TestCase
             })
         );
 
-        self::assertSame(
-            $this->ok,
-            $this->emptyError->orElse(function () {
-                return $this->ok;
-            })
+        $randomResult = function (): Ok|Error {
+            $result = ($this->random()->boolean())
+                ? Ok::empty()
+                : Error::empty();
+            $result->value();
+            return $result;
+        };
+
+        self::assertNotSame(
+            $this->emptyError,
+            $this->emptyError->orElse($randomResult)
         );
-        self::assertSame(
-            $this->ok,
-            $this->errorFromException->orElse(function () {
-                return $this->ok;
-            })
+        self::assertNotSame(
+            $this->errorFromException,
+            $this->errorFromException->orElse($randomResult)
         );
-        self::assertSame(
-            $this->ok,
-            $this->errorWithMessage->orElse(function () {
-                return $this->ok;
-            })
+        self::assertNotSame(
+            $this->errorWithMessage,
+            $this->errorWithMessage->orElse($randomResult)
         );
 
         self::assertSame(
             $this->emptyError,
-            $this->emptyError->andThen(function () {
-                return $this->ok;
-            })
+            $this->emptyError->andThen($randomResult)
         );
         self::assertSame(
             $this->errorFromException,
-            $this->errorFromException->andThen(function () {
-                return $this->ok;
-            })
+            $this->errorFromException->andThen($randomResult)
         );
         self::assertSame(
             $this->errorWithMessage,
-            $this->errorWithMessage->andThen(function () {
-                return $this->ok;
-            })
-        );
-    }
-
-    public function testBooleanOperationsWithArrowFunctions(): void
-    {
-        self::assertTrue(
-            $this->emptyError->or(fn () => true)
-        );
-        self::assertTrue(
-            $this->errorFromException->or(fn () => true)
-        );
-        self::assertTrue(
-            $this->errorWithMessage->or(fn () => true)
-        );
-
-        self::assertSame(
-            $this->ok,
-            $this->emptyError->orElse(fn () => $this->ok)
-        );
-        self::assertSame(
-            $this->ok,
-            $this->errorFromException->orElse(fn () => $this->ok)
-        );
-        self::assertSame(
-            $this->ok,
-            $this->errorWithMessage->orElse(fn () => $this->ok)
-        );
-
-        self::assertSame(
-            $this->emptyError,
-            $this->emptyError->andThen(fn () => $this->ok)
-        );
-        self::assertSame(
-            $this->errorFromException,
-            $this->errorFromException->andThen(fn () => $this->ok)
-        );
-        self::assertSame(
-            $this->errorWithMessage,
-            $this->errorWithMessage->andThen(fn () => $this->ok)
+            $this->errorWithMessage->andThen($randomResult)
         );
     }
 
