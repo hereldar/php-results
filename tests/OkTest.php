@@ -6,7 +6,6 @@ namespace Hereldar\Results\Tests;
 
 use Exception;
 use Hereldar\Results\Error;
-use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
 use Throwable;
 use UnexpectedValueException;
@@ -27,16 +26,6 @@ final class OkTest extends TestCase
         $this->emptyOk = Ok::empty();
         $this->okWithValue = Ok::withValue(42);
         $this->error = Error::empty();
-    }
-
-    protected function tearDown(): void
-    {
-        // We make sure that all results have been used before
-        // destroying them.
-
-        $this->emptyOk->value();
-        $this->okWithValue->value();
-        $this->error->value();
     }
 
     public function testResultType(): void
@@ -129,11 +118,9 @@ final class OkTest extends TestCase
         );
 
         $randomResult = function (): Ok|Error {
-            $result = ($this->random()->boolean())
-                ? Ok::empty()
-                : Error::empty();
-            $result->value();
-            return $result;
+            return ($this->random()->boolean())
+                ? Ok::withValue(true)
+                : Error::withMessage('false');
         };
 
         self::assertSame(
@@ -177,26 +164,6 @@ final class OkTest extends TestCase
         self::assertSame(
             $this->okWithValue,
             $this->okWithValue->onFailure(fn () => throw new Exception())
-        );
-    }
-
-    public function testUnusedException(): void
-    {
-        self::assertException(
-            UnusedResult::class,
-            static function () {
-                $result = Ok::empty();
-                unset($result);
-
-                throw new Exception();
-            }
-        );
-
-        self::assertException(
-            UnusedResult::class,
-            static function () {
-                Ok::empty();
-            }
         );
     }
 }

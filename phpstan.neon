@@ -3,7 +3,4 @@ parameters:
     paths:
         - src
         - tests
-    excludePaths:
-        analyse:
-            - src/Backtrace.php
     checkGenericClassInNonGenericObjectType: false

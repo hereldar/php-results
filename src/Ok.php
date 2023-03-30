@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use Throwable;
 
@@ -14,8 +13,8 @@ use Throwable;
  */
 final class Ok implements IResult
 {
-    private bool $used = false;
-    private readonly Backtrace $trace;
+    /** @var self<null>|null */
+    private static ?Ok $empty = null;
 
     /**
      * @param T $value
@@ -23,14 +22,6 @@ final class Ok implements IResult
     private function __construct(
         private readonly mixed $value,
     ) {
-        $this->trace = new Backtrace($this::class);
-    }
-
-    public function __destruct()
-    {
-        if (!$this->used) {
-            throw new UnusedResult($this, (string) $this->trace);
-        }
     }
 
     /**
@@ -38,7 +29,7 @@ final class Ok implements IResult
      */
     public static function empty(): self
     {
-        return new self(null);
+        return self::$empty ??= new self(null);
     }
 
     /**
@@ -71,8 +62,6 @@ final class Ok implements IResult
      */
     public function andThen(Ok|Error|Closure $result): Ok|Error
     {
-        $this->used = true;
-
         if ($result instanceof Closure) {
             return $result($this->value);
         }
@@ -87,8 +76,6 @@ final class Ok implements IResult
      */
     public function exception(): ?Throwable
     {
-        $this->used = true;
-
         return null;
     }
 
@@ -97,8 +84,6 @@ final class Ok implements IResult
      */
     public function hasException(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
@@ -107,15 +92,11 @@ final class Ok implements IResult
      */
     public function hasMessage(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
     public function hasValue(): bool
     {
-        $this->used = true;
-
         return ($this->value !== null);
     }
 
@@ -124,8 +105,6 @@ final class Ok implements IResult
      */
     public function isError(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
@@ -134,15 +113,11 @@ final class Ok implements IResult
      */
     public function isOk(): bool
     {
-        $this->used = true;
-
         return true;
     }
 
     public function message(): string
     {
-        $this->used = true;
-
         return '';
     }
 
@@ -153,8 +128,6 @@ final class Ok implements IResult
      */
     public function onFailure(Closure $action): static
     {
-        $this->used = true;
-
         return $this;
     }
 
@@ -165,8 +138,6 @@ final class Ok implements IResult
      */
     public function onSuccess(Closure $action): static
     {
-        $this->used = true;
-
         $action($this->value);
 
         return $this;
@@ -181,8 +152,6 @@ final class Ok implements IResult
      */
     public function or(mixed $value): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -191,8 +160,6 @@ final class Ok implements IResult
      */
     public function orDie(int|string $status = null): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -208,8 +175,6 @@ final class Ok implements IResult
      */
     public function orElse(Ok|Error|Closure $result): static
     {
-        $this->used = true;
-
         return $this;
     }
 
@@ -218,8 +183,6 @@ final class Ok implements IResult
      */
     public function orFail(): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -228,8 +191,6 @@ final class Ok implements IResult
      */
     public function orFalse(): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -238,8 +199,6 @@ final class Ok implements IResult
      */
     public function orNull(): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -254,8 +213,6 @@ final class Ok implements IResult
      */
     public function orThrow(Throwable|Closure $exception): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 
@@ -264,8 +221,6 @@ final class Ok implements IResult
      */
     public function value(): mixed
     {
-        $this->used = true;
-
         return $this->value;
     }
 }

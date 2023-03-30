@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Interfaces\IResult;
 use RuntimeException;
 use Throwable;
@@ -15,23 +14,12 @@ use Throwable;
  */
 final class Error implements IResult
 {
-    private bool $used = false;
-    private readonly Backtrace $trace;
-
     /**
      * @param E $exception
      */
     private function __construct(
         private readonly Throwable $exception,
     ) {
-        $this->trace = new Backtrace($this::class);
-    }
-
-    public function __destruct()
-    {
-        if (!$this->used) {
-            throw new UnusedResult($this, (string) $this->trace);
-        }
     }
 
     /**
@@ -74,8 +62,6 @@ final class Error implements IResult
      */
     public function andThen(Ok|Error|Closure $result): static
     {
-        $this->used = true;
-
         return $this;
     }
 
@@ -84,8 +70,6 @@ final class Error implements IResult
      */
     public function exception(): Throwable
     {
-        $this->used = true;
-
         return $this->exception;
     }
 
@@ -94,15 +78,11 @@ final class Error implements IResult
      */
     public function hasException(): bool
     {
-        $this->used = true;
-
         return true;
     }
 
     public function hasMessage(): bool
     {
-        $this->used = true;
-
         return ($this->exception->getMessage() !== '');
     }
 
@@ -111,8 +91,6 @@ final class Error implements IResult
      */
     public function hasValue(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
@@ -121,8 +99,6 @@ final class Error implements IResult
      */
     public function isError(): bool
     {
-        $this->used = true;
-
         return true;
     }
 
@@ -131,15 +107,11 @@ final class Error implements IResult
      */
     public function isOk(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
     public function message(): string
     {
-        $this->used = true;
-
         return $this->exception->getMessage();
     }
 
@@ -150,8 +122,6 @@ final class Error implements IResult
      */
     public function onFailure(Closure $action): static
     {
-        $this->used = true;
-
         $action($this->exception);
 
         return $this;
@@ -164,8 +134,6 @@ final class Error implements IResult
      */
     public function onSuccess(Closure $action): static
     {
-        $this->used = true;
-
         return $this;
     }
 
@@ -181,8 +149,6 @@ final class Error implements IResult
      */
     public function or(mixed $value): mixed
     {
-        $this->used = true;
-
         if ($value instanceof Closure) {
             return $value();
         }
@@ -192,8 +158,6 @@ final class Error implements IResult
 
     public function orDie(int|string $status = null): never
     {
-        $this->used = true;
-
         if (isset($status)) {
             exit($status);
         }
@@ -219,8 +183,6 @@ final class Error implements IResult
      */
     public function orElse(Ok|Error|Closure $result): Ok|Error
     {
-        $this->used = true;
-
         if ($result instanceof Closure) {
             return $result();
         }
@@ -235,8 +197,6 @@ final class Error implements IResult
      */
     public function orFail(): never
     {
-        $this->used = true;
-
         throw $this->exception;
     }
 
@@ -245,8 +205,6 @@ final class Error implements IResult
      */
     public function orFalse(): bool
     {
-        $this->used = true;
-
         return false;
     }
 
@@ -257,8 +215,6 @@ final class Error implements IResult
      */
     public function orNull(): mixed
     {
-        $this->used = true;
-
         return null;
     }
 
@@ -274,8 +230,6 @@ final class Error implements IResult
      */
     public function orThrow(Throwable|Closure $exception): never
     {
-        $this->used = true;
-
         if ($exception instanceof Closure) {
             throw $exception($this->exception);
         }
@@ -290,8 +244,6 @@ final class Error implements IResult
      */
     public function value(): mixed
     {
-        $this->used = true;
-
         return null;
     }
 }

@@ -6,7 +6,6 @@ namespace Hereldar\Results\Tests;
 
 use Exception;
 use Hereldar\Results\Error;
-use Hereldar\Results\Exceptions\UnusedResult;
 use Hereldar\Results\Ok;
 use LogicException;
 use RuntimeException;
@@ -31,17 +30,6 @@ final class ErrorTest extends TestCase
         $this->errorFromException = Error::withException(new LogicException('Frodo Bolsón'));
         $this->errorWithMessage = Error::withMessage('Bilbo Bolsón');
         $this->ok = Ok::empty();
-    }
-
-    protected function tearDown(): void
-    {
-        // We make sure that all results have been used before
-        // destroying them.
-
-        $this->emptyError->value();
-        $this->errorFromException->value();
-        $this->errorWithMessage->value();
-        $this->ok->value();
     }
 
     public function testResultType(): void
@@ -200,11 +188,9 @@ final class ErrorTest extends TestCase
         );
 
         $randomResult = function (): Ok|Error {
-            $result = ($this->random()->boolean())
-                ? Ok::empty()
-                : Error::empty();
-            $result->value();
-            return $result;
+            return ($this->random()->boolean())
+                ? Ok::withValue(true)
+                : Error::withMessage('false');
         };
 
         self::assertNotSame(
@@ -266,26 +252,6 @@ final class ErrorTest extends TestCase
             Exception::class,
             function () {
                 $this->errorWithMessage->onFailure(fn () => throw new Exception());
-            }
-        );
-    }
-
-    public function testUnusedException(): void
-    {
-        self::assertException(
-            UnusedResult::class,
-            static function () {
-                $result = Error::empty();
-                unset($result);
-
-                throw new Exception();
-            }
-        );
-
-        self::assertException(
-            UnusedResult::class,
-            static function () {
-                Error::empty();
             }
         );
     }
