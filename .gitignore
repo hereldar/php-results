@@ -16,7 +16,6 @@ phpunit.xml
 
 # Docs
 cache
-package-lock.json
 
 # Others
 *.cache
