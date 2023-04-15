@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.21",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.1"
     },
     "autoload": {
         "psr-4": {
