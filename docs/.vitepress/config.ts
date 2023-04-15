@@ -26,5 +26,5 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/hereldar/php-results' }
     ]
   },
-  base: '/php-date-times/'
+  base: '/php-results/'
 })
