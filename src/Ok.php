@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use Hereldar\Results\Interfaces\IResult;
+use Hereldar\Results\Interfaces\Resultlike;
 use Throwable;
 
 /**
- * @template T
+ * @template-covariant T
  */
-final class Ok implements IResult
+final class Ok implements Resultlike
 {
     /** @var self<null>|null */
     private static ?Ok $empty = null;
@@ -135,6 +135,8 @@ final class Ok implements IResult
      * @param Closure(T):void $action
      *
      * @return $this
+     *
+     * @psalm-suppress InvalidTemplateParam
      */
     public function onSuccess(Closure $action): static
     {
@@ -146,7 +148,7 @@ final class Ok implements IResult
     /**
      * @template U
      *
-     * @param U|Closure(T):U $value
+     * @param U|Closure():U $value
      *
      * @return T
      */

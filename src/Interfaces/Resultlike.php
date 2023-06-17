@@ -12,7 +12,7 @@ use Throwable;
 /**
  * @internal
  */
-interface IResult
+interface Resultlike
 {
     /**
      * Returns the given `result` if this instance is a success.

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use Hereldar\Results\Interfaces\IResult;
+use Hereldar\Results\Interfaces\Resultlike;
 use RuntimeException;
 use Throwable;
 
 /**
- * @template E of Throwable
+ * @template-covariant E of Throwable
  */
-final class Error implements IResult
+final class Error implements Resultlike
 {
     /**
      * @param E $exception
@@ -119,6 +119,8 @@ final class Error implements IResult
      * @param Closure(E):void $action
      *
      * @return $this
+     *
+     * @psalm-suppress InvalidTemplateParam
      */
     public function onFailure(Closure $action): static
     {
@@ -227,6 +229,7 @@ final class Error implements IResult
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      * @psalm-suppress UndefinedDocblockClass
+     * @psalm-suppress InvalidTemplateParam
      */
     public function orThrow(Throwable|Closure $exception): never
     {
