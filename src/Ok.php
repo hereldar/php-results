@@ -9,6 +9,8 @@ use Hereldar\Results\Interfaces\Resultlike;
 use Throwable;
 
 /**
+ * Contains the success value.
+ *
  * @template-covariant T
  */
 final class Ok implements Resultlike
@@ -25,6 +27,8 @@ final class Ok implements Resultlike
     }
 
     /**
+     * Returns a successful result containing no value (`null`).
+     *
      * @return self<null>
      */
     public static function empty(): self
@@ -33,6 +37,8 @@ final class Ok implements Resultlike
     }
 
     /**
+     * Makes a new `Ok` with the given `value`.
+     *
      * @template U
      *
      * @param U $value

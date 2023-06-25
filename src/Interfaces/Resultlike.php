@@ -18,7 +18,7 @@ interface Resultlike
      * Returns the given `result` if this instance is a success.
      * Otherwise, returns this error instance.
      *
-     * **Note:** If the given `result` is a closure and this instance
+     * **Note:** If the `result` is a closure and this instance
      * is a success, this method will call it and return its output.
      */
     public function andThen(Ok|Error|Closure $result): Ok|Error;
@@ -98,7 +98,7 @@ interface Resultlike
      * Returns the given `result` if this instance is an error.
      * Otherwise, returns this success instance.
      *
-     * **Note:** If the given `result` is a closure and this instance
+     * **Note:** If the `result` is a closure and this instance
      * is an error, this method will call it and return its output.
      */
     public function orElse(Ok|Error|Closure $result): Ok|Error;

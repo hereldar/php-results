@@ -10,6 +10,8 @@ use RuntimeException;
 use Throwable;
 
 /**
+ * Contains the error exception.
+ *
  * @template-covariant E of Throwable
  */
 final class Error implements Resultlike
@@ -23,6 +25,9 @@ final class Error implements Resultlike
     }
 
     /**
+     * Makes a new `Error` containing a `RuntimeException` with no
+     * message.
+     *
      * @return self<RuntimeException>
      */
     public static function empty(): self
@@ -31,6 +36,8 @@ final class Error implements Resultlike
     }
 
     /**
+     * Makes a new `Error` with the given `exception`.
+     *
      * @template F of Throwable
      *
      * @param F $exception
@@ -43,6 +50,9 @@ final class Error implements Resultlike
     }
 
     /**
+     * Makes a new `Error` containing a `RuntimeException` with the
+     * given `message`.
+     *
      * @return self<RuntimeException>
      */
     public static function withMessage(string $message): self
