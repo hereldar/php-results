@@ -8,7 +8,7 @@ Results
 [![Packagist][packagist-version-badge]][packagist-url]
 [![License][license-badge]][license-url]
 
-[php-badge]: https://img.shields.io/badge/php-8.1%20to%208.2-777bb3.svg
+[php-badge]: https://img.shields.io/badge/php-8.1%20to%208.3-777bb3.svg
 [php-url]: https://coveralls.io/github/hereldar/php-results
 [codecov-badge]: https://img.shields.io/codecov/c/github/hereldar/php-results
 [codecov-url]: https://app.codecov.io/gh/hereldar/php-results

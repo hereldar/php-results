@@ -91,6 +91,8 @@ interface Resultlike
     /**
      * Terminates execution of the script if the result is an error.
      * Otherwise, returns the success value.
+     *
+     * @psalm-suppress PossiblyUnusedMethod
      */
     public function orDie(int|string $status = null): mixed;
 
