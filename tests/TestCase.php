@@ -7,6 +7,8 @@ namespace Hereldar\Results\Tests;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
+use PHPUnit\Framework\Constraint\ExceptionCode;
+use PHPUnit\Framework\Constraint\ExceptionMessageIsOrContains;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Throwable;
@@ -16,27 +18,41 @@ abstract class TestCase extends PHPUnitTestCase
     private FakerGenerator|null $random = null;
 
     /**
-     * @param class-string<Throwable> $expectedException
+     * @param Throwable|class-string<Throwable> $expectedException
      *
      * @psalm-suppress InternalClass
      * @psalm-suppress InternalMethod
      */
     public static function assertException(
-        string $expectedException,
+        Throwable|string $expectedException,
         callable $callback
     ): void {
+        $exception = null;
+
         try {
             $callback();
-            $exception = null;
         } catch (Throwable $exception) {
         }
-        /** @psalm-suppress PossiblyUndefinedVariable */
-        static::assertThat(
-            $exception,
-            new ExceptionConstraint(
-                $expectedException
-            )
-        );
+
+        if (is_string($expectedException)) {
+            static::assertThat(
+                $exception,
+                new ExceptionConstraint($expectedException)
+            );
+        } else {
+            static::assertThat(
+                $exception,
+                new ExceptionConstraint($expectedException::class)
+            );
+            static::assertThat(
+                $exception?->getMessage(),
+                new ExceptionMessageIsOrContains($expectedException->getMessage())
+            );
+            static::assertThat(
+                $exception?->getCode(),
+                new ExceptionCode($expectedException->getCode())
+            );
+        }
     }
 
     public static function assertExceptionMessage(

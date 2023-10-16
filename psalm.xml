@@ -19,6 +19,11 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <RedundantConditionGivenDocblockType>
+            <errorLevel type="suppress">
+                <directory name="tests"/>
+            </errorLevel>
+        </RedundantConditionGivenDocblockType>
         <UnusedClass>
             <errorLevel type="suppress">
                 <directory name="tests"/>

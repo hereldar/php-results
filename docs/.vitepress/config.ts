@@ -36,7 +36,8 @@ function nav() {
       activeMatch: '/reference/',
       items: [
         { text: 'Ok', link: '/reference/ok' },
-        { text: 'Error', link: '/reference/error' }
+        { text: 'Error', link: '/reference/error' },
+        { text: 'Result', link: '/reference/result' }
       ]
     }
   ]
@@ -55,7 +56,8 @@ function sidebarReference() {
       link: '/reference/',
       items: [
         { text: 'Ok', link: '/reference/ok' },
-        { text: 'Error', link: '/reference/error' }
+        { text: 'Error', link: '/reference/error' },
+        { text: 'Result', link: '/reference/result' }
       ]
     }
   ]
