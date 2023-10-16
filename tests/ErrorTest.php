@@ -92,54 +92,54 @@ final class ErrorTest extends TestCase
 
         self::assertException(
             RuntimeException::class,
-            fn () => $this->emptyError->orFail(),
+            fn() => $this->emptyError->orFail(),
         );
         self::assertException(
             LogicException::class,
-            fn () => $this->errorFromException->orFail(),
+            fn() => $this->errorFromException->orFail(),
         );
         self::assertException(
             RuntimeException::class,
-            fn () => $this->errorWithMessage->orFail(),
+            fn() => $this->errorWithMessage->orFail(),
         );
 
         self::assertExceptionMessage(
             '',
-            fn () => $this->emptyError->orFail(),
+            fn() => $this->emptyError->orFail(),
         );
         self::assertExceptionMessage(
             'Frodo Bolsón',
-            fn () => $this->errorFromException->orFail(),
+            fn() => $this->errorFromException->orFail(),
         );
         self::assertExceptionMessage(
             'Bilbo Bolsón',
-            fn () => $this->errorWithMessage->orFail(),
+            fn() => $this->errorWithMessage->orFail(),
         );
 
         self::assertException(
             UnexpectedValueException::class,
-            fn () => $this->emptyError->orThrow(new UnexpectedValueException()),
+            fn() => $this->emptyError->orThrow(new UnexpectedValueException()),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorFromException->orThrow(new UnexpectedValueException('The result was an error')),
+            fn() => $this->errorFromException->orThrow(new UnexpectedValueException('The result was an error')),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorWithMessage->orThrow(new UnexpectedValueException('The result was an error')),
+            fn() => $this->errorWithMessage->orThrow(new UnexpectedValueException('The result was an error')),
         );
 
         self::assertException(
             UnexpectedValueException::class,
-            fn () => $this->emptyError->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)),
+            fn() => $this->emptyError->orThrow(fn(Throwable $e) => new UnexpectedValueException(previous: $e)),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorFromException->orThrow(fn (Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
+            fn() => $this->errorFromException->orThrow(fn(Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
         self::assertExceptionMessage(
             'The result was an error',
-            fn () => $this->errorWithMessage->orThrow(fn (Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
+            fn() => $this->errorWithMessage->orThrow(fn(Throwable $e) => new UnexpectedValueException('The result was an error', previous: $e)),
         );
 
         self::assertSame(
@@ -224,34 +224,34 @@ final class ErrorTest extends TestCase
     {
         self::assertSame(
             $this->emptyError,
-            $this->emptyError->onSuccess(fn () => throw new Exception())
+            $this->emptyError->onSuccess(fn() => throw new Exception())
         );
         self::assertException(
             Exception::class,
             function () {
-                $this->emptyError->onFailure(fn () => throw new Exception());
+                $this->emptyError->onFailure(fn() => throw new Exception());
             }
         );
 
         self::assertSame(
             $this->errorFromException,
-            $this->errorFromException->onSuccess(fn () => throw new Exception())
+            $this->errorFromException->onSuccess(fn() => throw new Exception())
         );
         self::assertException(
             Exception::class,
             function () {
-                $this->errorFromException->onFailure(fn () => throw new Exception());
+                $this->errorFromException->onFailure(fn() => throw new Exception());
             }
         );
 
         self::assertSame(
             $this->errorWithMessage,
-            $this->errorWithMessage->onSuccess(fn () => throw new Exception())
+            $this->errorWithMessage->onSuccess(fn() => throw new Exception())
         );
         self::assertException(
             Exception::class,
             function () {
-                $this->errorWithMessage->onFailure(fn () => throw new Exception());
+                $this->errorWithMessage->onFailure(fn() => throw new Exception());
             }
         );
     }

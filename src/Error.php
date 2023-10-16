@@ -12,6 +12,9 @@ use Throwable;
 /**
  * Contains the error exception.
  *
+ * Instances of this class are immutable and not affected by any
+ * method calls.
+ *
  * @template-covariant E of Throwable
  */
 final class Error implements Resultlike
@@ -21,8 +24,7 @@ final class Error implements Resultlike
      */
     private function __construct(
         private readonly Throwable $exception,
-    ) {
-    }
+    ) {}
 
     /**
      * Makes a new `Error` containing a `RuntimeException` with no
@@ -252,7 +254,7 @@ final class Error implements Resultlike
 
     /**
      * @return null
-     * 
+     *
      * @psalm-suppress  InvalidReturnStatement
      */
     public function value(): mixed

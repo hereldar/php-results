@@ -81,8 +81,8 @@ final class OkTest extends TestCase
         self::assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
         self::assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
 
-        self::assertNull($this->emptyOk->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
-        self::assertSame(42, $this->okWithValue->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
+        self::assertNull($this->emptyOk->orThrow(fn(Throwable $e) => new UnexpectedValueException(previous: $e)));
+        self::assertSame(42, $this->okWithValue->orThrow(fn(Throwable $e) => new UnexpectedValueException(previous: $e)));
 
         self::assertSame(
             $this->emptyOk,
@@ -147,23 +147,23 @@ final class OkTest extends TestCase
         self::assertException(
             Exception::class,
             function () {
-                $this->emptyOk->onSuccess(fn () => throw new Exception());
+                $this->emptyOk->onSuccess(fn() => throw new Exception());
             }
         );
         self::assertSame(
             $this->emptyOk,
-            $this->emptyOk->onFailure(fn () => throw new Exception())
+            $this->emptyOk->onFailure(fn() => throw new Exception())
         );
 
         self::assertException(
             Exception::class,
             function () {
-                $this->okWithValue->onSuccess(fn () => throw new Exception());
+                $this->okWithValue->onSuccess(fn() => throw new Exception());
             }
         );
         self::assertSame(
             $this->okWithValue,
-            $this->okWithValue->onFailure(fn () => throw new Exception())
+            $this->okWithValue->onFailure(fn() => throw new Exception())
         );
     }
 }

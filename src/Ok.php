@@ -11,6 +11,9 @@ use Throwable;
 /**
  * Contains the success value.
  *
+ * Instances of this class are immutable and not affected by any
+ * method calls.
+ *
  * @template-covariant T
  */
 final class Ok implements Resultlike
@@ -23,8 +26,7 @@ final class Ok implements Resultlike
      */
     private function __construct(
         private readonly mixed $value,
-    ) {
-    }
+    ) {}
 
     /**
      * Returns a successful result containing no value (`null`).
