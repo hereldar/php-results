@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/tools/php-cs-fixer/ClarifyingParenthesesAroundComparisonsFixer.php';
+require __DIR__ . '/tools/php-cs-fixer/MultilineWhitespaceBeforeDoubleColonFixer.php';
 
 $finder = PhpCsFixer\Finder
     ::create()
@@ -10,6 +11,7 @@ $finder = PhpCsFixer\Finder
 $config = new PhpCsFixer\Config();
 $config->registerCustomFixers([
     new Hereldar\Tools\PhpCsFixer\ClarifyingParenthesesAroundComparisonsFixer(),
+    new Hereldar\Tools\PhpCsFixer\MultilineWhitespaceBeforeDoubleColonFixer(),
 ]);
 $config->setFinder($finder);
 $config->setRules([
@@ -19,14 +21,13 @@ $config->setRules([
     'array_indentation' => true,
     'backtick_to_shell_exec' => true,
     'binary_operator_spaces' => true,
-    'blank_line_before_statement' => ['statements' => ['case', 'declare', 'default', 'phpdoc', 'do', 'exit', 'for', 'foreach', 'goto', 'if', 'include', 'include_once', 'require', 'require_once', 'return', 'switch', 'throw', 'try', 'while', 'yield', 'yield_from']],
     'braces_position' => ['allow_single_line_anonymous_functions' => true, 'allow_single_line_empty_anonymous_classes' => true],
     'cast_spaces' => true,
     'class_attributes_separation' => ['elements' => ['method' => 'one', /*'case' => 'one'*/]],
     'class_reference_name_casing' => true,
     'combine_consecutive_issets' => true,
     'combine_consecutive_unsets' => true,
-    'concat_space' => ['spacing' => 'one'],
+    'concat_space' => ['spacing' => 'none'],
     'declare_parentheses' => true,
     'echo_tag_syntax' => true,
     'empty_loop_body' => ['style' => 'braces'],
@@ -41,9 +42,9 @@ $config->setRules([
     'lambda_not_used_import' => true,
     'linebreak_after_opening_tag' => true,
     'magic_constant_casing' => true,
+    'method_argument_space' => ['on_multiline' => 'ignore'],
     'method_chaining_indentation' => true,
     'multiline_comment_opening_closing' => true,
-    'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
     'native_function_casing' => true,
     'native_type_declaration_casing' => true,
     'no_alias_language_construct_call' => true,
@@ -68,7 +69,7 @@ $config->setRules([
     'no_unused_imports' => true,
     'object_operator_without_whitespace' => true,
     'operator_linebreak' => ['position' => 'beginning'],
-    'ordered_class_elements' => true,
+    'ordered_class_elements' => ['order' => ['use_trait']],
     'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
     'php_unit_fqcn_annotation' => true,
     'php_unit_method_casing' => true,
@@ -88,6 +89,7 @@ $config->setRules([
         ['author', 'copyright', 'license'],
         ['category', 'package', 'subpackage'],
         ['property', 'property-read', 'property-write', 'phpstan-property', 'phpstan-property-read', 'phpstan-property-write', 'psalm-property', 'psalm-property-read', 'psalm-property-write'],
+        ['pure', 'phpstan-pure', 'psalm-pure'],
         ['param', 'phpstan-param', 'psalm-param'],
         ['throws', 'phpstan-throws', 'psalm-throws'],
         ['return', 'phpstan-return', 'psalm-return'],
@@ -95,7 +97,7 @@ $config->setRules([
     'phpdoc_single_line_var_spacing' => true,
     'phpdoc_summary' => true,
     'phpdoc_tag_type' => true,
-    'phpdoc_to_comment' => true,
+    'phpdoc_to_comment' => ['ignored_tags' => ['var', 'phpstan-var', 'psalm-var', 'phpstan-ignore-next-line', 'psalm-suppress']],
     'phpdoc_trim' => true,
     'phpdoc_trim_consecutive_blank_line_separation' => true,
     'phpdoc_types' => true,
@@ -121,6 +123,7 @@ $config->setRules([
     'unary_operator_spaces' => true,
     'whitespace_after_comma_in_array' => true,
     'Hereldar/clarifying_parentheses_around_comparisons' => true,
+    'Hereldar/multiline_whitespace_before_double_colon' => true,
 ]);
 
 return $config;
