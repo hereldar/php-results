@@ -106,15 +106,11 @@ final class OkTest extends TestCase
     public function testBooleanOperationsWithClosures(): void
     {
         self::assertNull(
-            $this->emptyOk->or(function () {
-                return true;
-            })
+            $this->emptyOk->or(fn() => true)
         );
         self::assertSame(
             42,
-            $this->okWithValue->or(function () {
-                return true;
-            })
+            $this->okWithValue->or(fn() => true)
         );
 
         $randomResult = function (): Ok|Error {
@@ -146,7 +142,7 @@ final class OkTest extends TestCase
     {
         self::assertException(
             Exception::class,
-            function () {
+            function (): void {
                 $this->emptyOk->onSuccess(fn() => throw new Exception());
             }
         );
@@ -157,7 +153,7 @@ final class OkTest extends TestCase
 
         self::assertException(
             Exception::class,
-            function () {
+            function (): void {
                 $this->okWithValue->onSuccess(fn() => throw new Exception());
             }
         );

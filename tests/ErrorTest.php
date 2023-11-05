@@ -172,19 +172,13 @@ final class ErrorTest extends TestCase
     public function testBooleanOperationsWithClosures(): void
     {
         self::assertTrue(
-            $this->emptyError->or(function () {
-                return true;
-            })
+            $this->emptyError->or(fn() => true)
         );
         self::assertTrue(
-            $this->errorFromException->or(function () {
-                return true;
-            })
+            $this->errorFromException->or(fn() => true)
         );
         self::assertTrue(
-            $this->errorWithMessage->or(function () {
-                return true;
-            })
+            $this->errorWithMessage->or(fn() => true)
         );
 
         $randomResult = function (): Ok|Error {
@@ -228,7 +222,7 @@ final class ErrorTest extends TestCase
         );
         self::assertException(
             Exception::class,
-            function () {
+            function (): void {
                 $this->emptyError->onFailure(fn() => throw new Exception());
             }
         );
@@ -239,7 +233,7 @@ final class ErrorTest extends TestCase
         );
         self::assertException(
             Exception::class,
-            function () {
+            function (): void {
                 $this->errorFromException->onFailure(fn() => throw new Exception());
             }
         );
@@ -250,7 +244,7 @@ final class ErrorTest extends TestCase
         );
         self::assertException(
             Exception::class,
-            function () {
+            function (): void {
                 $this->errorWithMessage->onFailure(fn() => throw new Exception());
             }
         );

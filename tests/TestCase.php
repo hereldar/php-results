@@ -34,7 +34,7 @@ abstract class TestCase extends PHPUnitTestCase
         } catch (Throwable $exception) {
         }
 
-        if (is_string($expectedException)) {
+        if (\is_string($expectedException)) {
             static::assertThat(
                 $exception,
                 new ExceptionConstraint($expectedException)
