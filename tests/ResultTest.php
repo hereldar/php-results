@@ -76,13 +76,14 @@ final class ResultTest extends TestCase
         $exception = new RuntimeException();
         $result = Result::of(fn() => throw $exception);
         self::assertInstanceOf(Error::class, $result);
-        self::assertSame($exception, $result->exception());
+        self::assertSame($exception, $result->value());
     }
 
     public function testFromNullableValue(): void
     {
         $result = Result::fromNullable(null);
         self::assertInstanceOf(Error::class, $result);
+        self::assertNull($result->value());
 
         $result = Result::fromNullable(false);
         self::assertInstanceOf(Ok::class, $result);
@@ -108,6 +109,7 @@ final class ResultTest extends TestCase
     {
         $result = Result::fromNullable(fn() => null);
         self::assertInstanceOf(Error::class, $result);
+        self::assertNull($result->value());
 
         $result = Result::fromNullable(fn() => false);
         self::assertInstanceOf(Ok::class, $result);
@@ -143,6 +145,7 @@ final class ResultTest extends TestCase
 
         $result = Result::fromFalsable(false);
         self::assertInstanceOf(Error::class, $result);
+        self::assertNull($result->value());
 
         $value = $this->random()->randomNumber();
         $result = Result::fromFalsable($value);
@@ -168,6 +171,7 @@ final class ResultTest extends TestCase
 
         $result = Result::fromFalsable(fn() => false);
         self::assertInstanceOf(Error::class, $result);
+        self::assertNull($result->value());
 
         $value = $this->random()->randomNumber();
         $result = Result::fromFalsable(fn() => $value);

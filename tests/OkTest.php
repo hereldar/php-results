@@ -11,12 +11,18 @@ use Throwable;
 use UnexpectedValueException;
 
 /**
+ * @psalm-suppress MissingConstructor
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class OkTest extends TestCase
 {
+    /** @var Ok<null> */
     private Ok $emptyOk;
+
+    /** @var Ok<int> */
     private Ok $okWithValue;
+
+    /** @var Error<null> */
     private Error $error;
 
     protected function setUp(): void
@@ -24,8 +30,19 @@ final class OkTest extends TestCase
         parent::setUp();
 
         $this->emptyOk = Ok::empty();
-        $this->okWithValue = Ok::withValue(42);
+        $this->okWithValue = Ok::of(42);
         $this->error = Error::empty();
+    }
+
+    /**
+     * @psalm-suppress InaccessibleMethod
+     */
+    public function testPrivateConstructor(): void
+    {
+        self::assertException(
+            \Error::class,
+            fn() => new Ok(null) // @phpstan-ignore-line
+        );
     }
 
     public function testResultType(): void
@@ -35,24 +52,6 @@ final class OkTest extends TestCase
 
         self::assertTrue($this->emptyOk->isOk());
         self::assertTrue($this->okWithValue->isOk());
-    }
-
-    public function testResultException(): void
-    {
-        self::assertFalse($this->emptyOk->hasException());
-        self::assertFalse($this->okWithValue->hasException());
-
-        self::assertNull($this->emptyOk->exception());
-        self::assertNull($this->okWithValue->exception());
-    }
-
-    public function testResultMessage(): void
-    {
-        self::assertFalse($this->emptyOk->hasMessage());
-        self::assertFalse($this->okWithValue->hasMessage());
-
-        self::assertSame('', $this->emptyOk->message());
-        self::assertSame('', $this->okWithValue->message());
     }
 
     public function testResultValue(): void
@@ -115,8 +114,8 @@ final class OkTest extends TestCase
 
         $randomResult = function (): Ok|Error {
             return ($this->random()->boolean())
-                ? Ok::withValue(true)
-                : Error::withMessage('false');
+                ? Ok::of(true)
+                : Error::of('false');
         };
 
         self::assertSame(

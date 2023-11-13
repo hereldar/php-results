@@ -10,61 +10,52 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Contains the error exception.
+ * Contains the error value.
  *
  * Instances of this class are immutable and not affected by any
  * method calls.
  *
- * @template-covariant E of Throwable
+ * @template-covariant E
  */
 final class Error implements Resultlike
 {
+    /** @var self<null>|null */
+    private static ?Error $empty = null;
+
     /**
-     * @param E $exception
+     * @param E $value
      */
     private function __construct(
-        private readonly Throwable $exception,
+        private readonly mixed $value,
     ) {}
 
     /**
-     * Makes a new `Error` containing a `RuntimeException` with no
-     * message.
+     * Makes a new `Error` with the given `value`.
      *
-     * @return self<RuntimeException>
-     */
-    public static function empty(): self
-    {
-        return new self(new RuntimeException());
-    }
-
-    /**
-     * Makes a new `Error` with the given `exception`.
+     * @template F
      *
-     * @template F of Throwable
-     *
-     * @param F $exception
+     * @param F $value
      *
      * @return self<F>
      */
-    public static function withException(Throwable $exception): self
+    public static function of(mixed $value): self
     {
-        return new self($exception);
+        return new self($value);
     }
 
     /**
-     * Makes a new `Error` containing a `RuntimeException` with the
-     * given `message`.
+     * Returns an `Error` containing no value (`null`).
      *
-     * @return self<RuntimeException>
+     * @return self<null>
      */
-    public static function withMessage(string $message): self
+    public static function empty(): self
     {
-        return new self(new RuntimeException($message));
+        return self::$empty ??= new self(null);
     }
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F
      *
      * @param Ok<U>|Error<F>|Closure(mixed):(Ok<U>|Error<F>) $result
      *
@@ -77,33 +68,9 @@ final class Error implements Resultlike
         return $this;
     }
 
-    /**
-     * @return E
-     */
-    public function exception(): Throwable
-    {
-        return $this->exception;
-    }
-
-    /**
-     * @return true
-     */
-    public function hasException(): bool
-    {
-        return true;
-    }
-
-    public function hasMessage(): bool
-    {
-        return ($this->exception->getMessage() !== '');
-    }
-
-    /**
-     * @return false
-     */
     public function hasValue(): bool
     {
-        return false;
+        return ($this->value !== null);
     }
 
     /**
@@ -122,11 +89,6 @@ final class Error implements Resultlike
         return false;
     }
 
-    public function message(): string
-    {
-        return $this->exception->getMessage();
-    }
-
     /**
      * @param Closure(E):void $action
      *
@@ -136,7 +98,7 @@ final class Error implements Resultlike
      */
     public function onFailure(Closure $action): static
     {
-        $action($this->exception);
+        $action($this->value);
 
         return $this;
     }
@@ -181,7 +143,7 @@ final class Error implements Resultlike
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F
      *
      * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *
@@ -205,13 +167,18 @@ final class Error implements Resultlike
     }
 
     /**
-     * @throws E
+     * @throws E|RuntimeException
+     * @phpstan-throws (E is Throwable ? E : RuntimeException)
      *
      * @psalm-suppress UndefinedDocblockClass
      */
     public function orFail(): never
     {
-        throw $this->exception;
+        if ($this->value instanceof Throwable) {
+            throw $this->value;
+        }
+
+        throw new RuntimeException();
     }
 
     /**
@@ -246,19 +213,17 @@ final class Error implements Resultlike
     public function orThrow(Throwable|Closure $exception): never
     {
         if ($exception instanceof Closure) {
-            throw $exception($this->exception);
+            throw $exception($this->value);
         }
 
         throw $exception;
     }
 
     /**
-     * @return null
-     *
-     * @psalm-suppress  InvalidReturnStatement
+     * @return E
      */
     public function value(): mixed
     {
-        return null;
+        return $this->value;
     }
 }

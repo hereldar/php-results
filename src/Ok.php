@@ -29,7 +29,21 @@ final class Ok implements Resultlike
     ) {}
 
     /**
-     * Returns a successful result containing no value (`null`).
+     * Makes a new `Ok` with the given `value`.
+     *
+     * @template U
+     *
+     * @param U $value
+     *
+     * @return self<U>
+     */
+    public static function of(mixed $value): self
+    {
+        return new self($value);
+    }
+
+    /**
+     * Returns an `Ok` containing no value (`null`).
      *
      * @return self<null>
      */
@@ -39,22 +53,8 @@ final class Ok implements Resultlike
     }
 
     /**
-     * Makes a new `Ok` with the given `value`.
-     *
      * @template U
-     *
-     * @param U $value
-     *
-     * @return self<U>
-     */
-    public static function withValue(mixed $value): self
-    {
-        return new self($value);
-    }
-
-    /**
-     * @template U
-     * @template F of Throwable
+     * @template F
      *
      * @param Ok<U>|Error<F>|Closure(T):(Ok<U>|Error<F>) $result
      *
@@ -77,32 +77,6 @@ final class Ok implements Resultlike
         return $result;
     }
 
-    /**
-     * @return null
-     *
-     * @psalm-suppress  InvalidReturnStatement
-     */
-    public function exception(): ?Throwable
-    {
-        return null;
-    }
-
-    /**
-     * @return false
-     */
-    public function hasException(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @return false
-     */
-    public function hasMessage(): bool
-    {
-        return false;
-    }
-
     public function hasValue(): bool
     {
         return ($this->value !== null);
@@ -122,11 +96,6 @@ final class Ok implements Resultlike
     public function isOk(): bool
     {
         return true;
-    }
-
-    public function message(): string
-    {
-        return '';
     }
 
     /**
@@ -175,7 +144,7 @@ final class Ok implements Resultlike
 
     /**
      * @template U
-     * @template F of Throwable
+     * @template F
      *
      * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *

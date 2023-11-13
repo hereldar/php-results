@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hereldar\Results;
 
 use Closure;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -38,11 +37,11 @@ final class Result
             try {
                 $value = $value();
             } catch (Throwable $e) {
-                return Error::withException($e);
+                return Error::of($e);
             }
         }
 
-        return Ok::withValue($value);
+        return Ok::of($value);
     }
 
     /**
@@ -56,7 +55,7 @@ final class Result
      *
      * @param (U|null)|Closure():(U|null) $value
      *
-     * @return Ok<U>|Error<RuntimeException>
+     * @return Ok<U>|Error<null>
      *
      * @psalm-suppress MixedAssignment
      */
@@ -68,7 +67,7 @@ final class Result
 
         return ($value === null)
             ? Error::empty()
-            : Ok::withValue($value);
+            : Ok::of($value);
     }
 
     /**
@@ -82,7 +81,7 @@ final class Result
      *
      * @param (U|false)|Closure():(U|false) $value
      *
-     * @return Ok<U>|Error<RuntimeException>
+     * @return Ok<U>|Error<null>
      *
      * @psalm-suppress MixedAssignment
      */
@@ -94,6 +93,6 @@ final class Result
 
         return ($value === false)
             ? Error::empty()
-            : Ok::withValue($value);
+            : Ok::of($value);
     }
 }

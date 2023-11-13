@@ -24,21 +24,6 @@ interface Resultlike
     public function andThen(Ok|Error|Closure $result): Ok|Error;
 
     /**
-     * Returns the result's exception, if any.
-     */
-    public function exception(): ?Throwable;
-
-    /**
-     * Returns `true` if the result includes an exception.
-     */
-    public function hasException(): bool;
-
-    /**
-     * Returns `true` if the result provides a message.
-     */
-    public function hasMessage(): bool;
-
-    /**
      * Returns `true` if the result contains a value.
      */
     public function hasValue(): bool;
@@ -54,16 +39,10 @@ interface Resultlike
     public function isOk(): bool;
 
     /**
-     * Returns the result's message, if any.
-     */
-    public function message(): string;
-
-    /**
-     * Performs the given `action` on the encapsulated `Throwable`
-     * exception if this instance is an error. Returns the original
-     * instance unchanged.
+     * Performs the given `action` on the encapsulated value if this
+     * instance is an error. Returns the original instance unchanged.
      *
-     * @param Closure(Throwable):void $action
+     * @param Closure(mixed):void $action
      *
      * @return $this
      */
