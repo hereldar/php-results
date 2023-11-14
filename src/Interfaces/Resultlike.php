@@ -42,7 +42,7 @@ interface Resultlike
      * Performs the given `action` on the encapsulated value if this
      * instance is an error. Returns the original instance unchanged.
      *
-     * @param Closure(mixed):void $action
+     * @param Closure(mixed):mixed $action
      *
      * @return $this
      */
@@ -52,7 +52,7 @@ interface Resultlike
      * Performs the given `action` on the encapsulated value if this
      * instance is a success. Returns the original instance unchanged.
      *
-     * @param Closure(mixed):void $action
+     * @param Closure(mixed):mixed $action
      *
      * @return $this
      */

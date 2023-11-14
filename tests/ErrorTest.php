@@ -223,6 +223,10 @@ final class ErrorTest extends TestCase
                 $this->emptyError->onFailure(fn() => throw new Exception());
             }
         );
+        self::assertSame(
+            $this->emptyError,
+            $this->emptyError->onFailure(function (): void {})
+        );
 
         self::assertSame(
             $this->errorWithException,
@@ -234,6 +238,10 @@ final class ErrorTest extends TestCase
                 $this->errorWithException->onFailure(fn() => throw new Exception());
             }
         );
+        self::assertSame(
+            $this->errorWithException,
+            $this->errorWithException->onFailure(fn() => 42)
+        );
 
         self::assertSame(
             $this->errorWithMessage,
@@ -244,6 +252,10 @@ final class ErrorTest extends TestCase
             function (): void {
                 $this->errorWithMessage->onFailure(fn() => throw new Exception());
             }
+        );
+        self::assertSame(
+            $this->errorWithMessage,
+            $this->errorWithMessage->onFailure(fn() => 'Smeagol')
         );
     }
 }

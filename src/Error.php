@@ -90,7 +90,7 @@ final class Error implements Resultlike
     }
 
     /**
-     * @param Closure(E):void $action
+     * @param Closure(E):mixed $action
      *
      * @return $this
      *
@@ -104,7 +104,7 @@ final class Error implements Resultlike
     }
 
     /**
-     * @param Closure(mixed):void $action
+     * @param Closure(mixed):mixed $action
      *
      * @return $this
      */
@@ -134,7 +134,7 @@ final class Error implements Resultlike
 
     public function orDie(int|string $status = null): never
     {
-        if (isset($status)) {
+        if ($status !== null) {
             exit($status);
         }
 

@@ -99,7 +99,7 @@ final class Ok implements Resultlike
     }
 
     /**
-     * @param Closure(Throwable):void $action
+     * @param Closure(Throwable):mixed $action
      *
      * @return $this
      */
@@ -109,7 +109,7 @@ final class Ok implements Resultlike
     }
 
     /**
-     * @param Closure(T):void $action
+     * @param Closure(T):mixed $action
      *
      * @return $this
      *
