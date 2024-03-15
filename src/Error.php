@@ -63,14 +63,14 @@ final class Error implements Resultlike
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function andThen(Ok|Error|Closure $result): static
+    public function andThen(Ok|self|Closure $result): static
     {
         return $this;
     }
 
     public function hasValue(): bool
     {
-        return ($this->value !== null);
+        return (null !== $this->value);
     }
 
     /**
@@ -132,9 +132,9 @@ final class Error implements Resultlike
         return $value;
     }
 
-    public function orDie(int|string $status = null): never
+    public function orDie(int|string|null $status = null): never
     {
-        if ($status !== null) {
+        if (null !== $status) {
             exit($status);
         }
 
@@ -148,7 +148,9 @@ final class Error implements Resultlike
      * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *
      * @return Ok<U>|Error<F>
+     *
      * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     *
      * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
      *
      * @psalm-suppress MoreSpecificImplementedParamType
@@ -157,7 +159,7 @@ final class Error implements Resultlike
      * @psalm-suppress MixedReturnStatement
      * @psalm-suppress InvalidReturnStatement
      */
-    public function orElse(Ok|Error|Closure $result): Ok|Error
+    public function orElse(Ok|self|Closure $result): Ok|self
     {
         if ($result instanceof Closure) {
             return $result();
@@ -168,6 +170,7 @@ final class Error implements Resultlike
 
     /**
      * @throws E|RuntimeException
+     *
      * @phpstan-throws (E is Throwable ? E : RuntimeException)
      *
      * @psalm-suppress UndefinedDocblockClass

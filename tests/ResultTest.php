@@ -18,7 +18,7 @@ final class ResultTest extends TestCase
     {
         self::assertException(
             \Error::class,
-            fn() => new Result() // @phpstan-ignore-line
+            fn () => new Result() // @phpstan-ignore-line
         );
     }
 
@@ -50,31 +50,31 @@ final class ResultTest extends TestCase
 
     public function testOfClosure(): void
     {
-        $result = Result::of(fn() => null);
+        $result = Result::of(fn () => null);
         self::assertInstanceOf(Ok::class, $result);
         self::assertNull($result->value());
 
-        $result = Result::of(fn() => false);
+        $result = Result::of(fn () => false);
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
         $value = $this->random()->randomNumber();
-        $result = Result::of(fn() => $value);
+        $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->randomFloat();
-        $result = Result::of(fn() => $value);
+        $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->word();
-        $result = Result::of(fn() => $value);
+        $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $exception = new RuntimeException();
-        $result = Result::of(fn() => throw $exception);
+        $result = Result::of(fn () => throw $exception);
         self::assertInstanceOf(Error::class, $result);
         self::assertSame($exception, $result->value());
     }
@@ -107,33 +107,33 @@ final class ResultTest extends TestCase
 
     public function testFromNullableClosure(): void
     {
-        $result = Result::fromNullable(fn() => null);
+        $result = Result::fromNullable(fn () => null);
         self::assertInstanceOf(Error::class, $result);
         self::assertNull($result->value());
 
-        $result = Result::fromNullable(fn() => false);
+        $result = Result::fromNullable(fn () => false);
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
         $value = $this->random()->randomNumber();
-        $result = Result::fromNullable(fn() => $value);
+        $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->randomFloat();
-        $result = Result::fromNullable(fn() => $value);
+        $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->word();
-        $result = Result::fromNullable(fn() => $value);
+        $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $exception = new RuntimeException();
         self::assertException(
             $exception,
-            fn() => Result::fromNullable(fn() => throw $exception)
+            fn () => Result::fromNullable(fn () => throw $exception)
         );
     }
 
@@ -165,33 +165,33 @@ final class ResultTest extends TestCase
 
     public function testFromFalsableClosure(): void
     {
-        $result = Result::fromFalsable(fn() => null);
+        $result = Result::fromFalsable(fn () => null);
         self::assertInstanceOf(Ok::class, $result);
         self::assertNull($result->value());
 
-        $result = Result::fromFalsable(fn() => false);
+        $result = Result::fromFalsable(fn () => false);
         self::assertInstanceOf(Error::class, $result);
         self::assertNull($result->value());
 
         $value = $this->random()->randomNumber();
-        $result = Result::fromFalsable(fn() => $value);
+        $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->randomFloat();
-        $result = Result::fromFalsable(fn() => $value);
+        $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $value = $this->random()->word();
-        $result = Result::fromFalsable(fn() => $value);
+        $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
         $exception = new RuntimeException();
         self::assertException(
             $exception,
-            fn() => Result::fromFalsable(fn() => throw $exception)
+            fn () => Result::fromFalsable(fn () => throw $exception)
         );
     }
 }

@@ -65,7 +65,7 @@ final class Result
             $value = $value();
         }
 
-        return ($value === null)
+        return (null === $value)
             ? Error::empty()
             : Ok::of($value);
     }
@@ -91,7 +91,7 @@ final class Result
             $value = $value();
         }
 
-        return ($value === false)
+        return (false === $value)
             ? Error::empty()
             : Ok::of($value);
     }

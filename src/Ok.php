@@ -59,7 +59,9 @@ final class Ok implements Resultlike
      * @param Ok<U>|Error<F>|Closure(T):(Ok<U>|Error<F>) $result
      *
      * @return Ok<U>|Error<F>
+     *
      * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
+     *
      * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
      *
      * @psalm-suppress MoreSpecificImplementedParamType
@@ -68,7 +70,7 @@ final class Ok implements Resultlike
      * @psalm-suppress MixedReturnStatement
      * @psalm-suppress InvalidReturnStatement
      */
-    public function andThen(Ok|Error|Closure $result): Ok|Error
+    public function andThen(self|Error|Closure $result): self|Error
     {
         if ($result instanceof Closure) {
             return $result($this->value);
@@ -79,7 +81,7 @@ final class Ok implements Resultlike
 
     public function hasValue(): bool
     {
-        return ($this->value !== null);
+        return (null !== $this->value);
     }
 
     /**
@@ -137,7 +139,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
-    public function orDie(int|string $status = null): mixed
+    public function orDie(int|string|null $status = null): mixed
     {
         return $this->value;
     }
@@ -152,7 +154,7 @@ final class Ok implements Resultlike
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function orElse(Ok|Error|Closure $result): static
+    public function orElse(self|Error|Closure $result): static
     {
         return $this;
     }

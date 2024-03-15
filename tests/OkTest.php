@@ -41,7 +41,7 @@ final class OkTest extends TestCase
     {
         self::assertException(
             \Error::class,
-            fn() => new Ok(null) // @phpstan-ignore-line
+            fn () => new Ok(null) // @phpstan-ignore-line
         );
     }
 
@@ -83,8 +83,8 @@ final class OkTest extends TestCase
         self::assertNull($this->emptyOk->orThrow(new UnexpectedValueException()));
         self::assertSame(42, $this->okWithValue->orThrow(new UnexpectedValueException()));
 
-        self::assertNull($this->emptyOk->orThrow(fn(Throwable $e) => new UnexpectedValueException(previous: $e)));
-        self::assertSame(42, $this->okWithValue->orThrow(fn(Throwable $e) => new UnexpectedValueException(previous: $e)));
+        self::assertNull($this->emptyOk->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
+        self::assertSame(42, $this->okWithValue->orThrow(fn (Throwable $e) => new UnexpectedValueException(previous: $e)));
 
         self::assertSame(
             $this->emptyOk,
@@ -108,11 +108,11 @@ final class OkTest extends TestCase
     public function testBooleanOperationsWithClosures(): void
     {
         self::assertNull(
-            $this->emptyOk->or(fn() => true)
+            $this->emptyOk->or(fn () => true)
         );
         self::assertSame(
             42,
-            $this->okWithValue->or(fn() => true)
+            $this->okWithValue->or(fn () => true)
         );
 
         $randomResult = function (): Ok|Error {
@@ -145,12 +145,12 @@ final class OkTest extends TestCase
         self::assertException(
             Exception::class,
             function (): void {
-                $this->emptyOk->onSuccess(fn() => throw new Exception());
+                $this->emptyOk->onSuccess(fn () => throw new Exception());
             }
         );
         self::assertSame(
             $this->emptyOk,
-            $this->emptyOk->onFailure(fn() => throw new Exception())
+            $this->emptyOk->onFailure(fn () => throw new Exception())
         );
         self::assertSame(
             $this->emptyOk,
@@ -160,16 +160,16 @@ final class OkTest extends TestCase
         self::assertException(
             Exception::class,
             function (): void {
-                $this->okWithValue->onSuccess(fn() => throw new Exception());
+                $this->okWithValue->onSuccess(fn () => throw new Exception());
             }
         );
         self::assertSame(
             $this->okWithValue,
-            $this->okWithValue->onFailure(fn() => throw new Exception())
+            $this->okWithValue->onFailure(fn () => throw new Exception())
         );
         self::assertSame(
             $this->okWithValue,
-            $this->okWithValue->onSuccess(fn() => 42)
+            $this->okWithValue->onSuccess(fn () => 42)
         );
     }
 }

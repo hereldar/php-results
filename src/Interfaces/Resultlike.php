@@ -73,7 +73,7 @@ interface Resultlike
      *
      * @psalm-suppress PossiblyUnusedMethod
      */
-    public function orDie(int|string $status = null): mixed;
+    public function orDie(int|string|null $status = null): mixed;
 
     /**
      * Returns the given `result` if this instance is an error.
