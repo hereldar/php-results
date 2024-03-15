@@ -1,7 +1,6 @@
-import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default {
   lang: 'en-US',
   title: "Hereldar\\Results",
   description: "An opinionated result type to manage the results in any way you choose",
@@ -21,7 +20,7 @@ export default defineConfig({
     ]
   },
   base: '/php-results/'
-})
+}
 
 function nav() {
   return [
