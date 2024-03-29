@@ -179,7 +179,7 @@ final class ErrorTest extends TestCase
         );
 
         $randomResult = function (): Ok|Error {
-            return ($this->random()->boolean())
+            return (fake()->boolean())
                 ? Ok::of(true)
                 : Error::of('false');
         };

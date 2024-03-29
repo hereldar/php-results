@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Hereldar\Results\Tests;
 
-use Faker\Factory as FakerFactory;
-use Faker\Generator as FakerGenerator;
 use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
 use PHPUnit\Framework\Constraint\ExceptionCode;
 use PHPUnit\Framework\Constraint\ExceptionMessageIsOrContains;
@@ -15,8 +13,6 @@ use Throwable;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    private FakerGenerator|null $random = null;
-
     /**
      * @param Throwable|class-string<Throwable> $expectedException
      *
@@ -71,10 +67,5 @@ abstract class TestCase extends PHPUnitTestCase
                 $expectedMessage
             )
         );
-    }
-
-    protected function random(): FakerGenerator
-    {
-        return $this->random ??= FakerFactory::create();
     }
 }
