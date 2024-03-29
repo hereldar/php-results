@@ -19,7 +19,7 @@
         "php": "^8.1.17|^8.2.4|^8.3.0"
     },
     "require-dev": {
-        "hereldar/coding-style": "^0.1.0",
+        "hereldar/coding-style": "^0.1.2",
         "hereldar/faker-helper": "^0.1.1",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.1",

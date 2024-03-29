@@ -148,9 +148,7 @@ final class Error implements Resultlike
      * @param Ok<U>|Error<F>|Closure():(Ok<U>|Error<F>) $result
      *
      * @return Ok<U>|Error<F>
-     *
      * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
-     *
      * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
      *
      * @psalm-suppress MoreSpecificImplementedParamType
@@ -170,7 +168,6 @@ final class Error implements Resultlike
 
     /**
      * @throws E|RuntimeException
-     *
      * @phpstan-throws (E is Throwable ? E : RuntimeException)
      *
      * @psalm-suppress UndefinedDocblockClass

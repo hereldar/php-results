@@ -59,9 +59,7 @@ final class Ok implements Resultlike
      * @param Ok<U>|Error<F>|Closure(T):(Ok<U>|Error<F>) $result
      *
      * @return Ok<U>|Error<F>
-     *
      * @phpstan-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
-     *
      * @psalm-return ($result is Ok ? Ok<U> : ($result is Error ? Error<F> : Ok<U>|Error<F>))
      *
      * @psalm-suppress MoreSpecificImplementedParamType

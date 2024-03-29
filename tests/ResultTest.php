@@ -32,17 +32,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::of($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::of($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::of($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
@@ -58,17 +58,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::of(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
@@ -89,17 +89,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::fromNullable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::fromNullable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::fromNullable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
@@ -115,17 +115,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Ok::class, $result);
         self::assertFalse($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::fromNullable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
@@ -147,17 +147,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Error::class, $result);
         self::assertNull($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::fromFalsable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::fromFalsable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::fromFalsable($value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
@@ -173,17 +173,17 @@ final class ResultTest extends TestCase
         self::assertInstanceOf(Error::class, $result);
         self::assertNull($result->value());
 
-        $value = fake()->integer();
+        $value = \fake()->integer();
         $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->float();
+        $value = \fake()->float();
         $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
 
-        $value = fake()->word();
+        $value = \fake()->word();
         $result = Result::fromFalsable(fn () => $value);
         self::assertInstanceOf(Ok::class, $result);
         self::assertSame($value, $result->value());
