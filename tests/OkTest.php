@@ -7,6 +7,7 @@ namespace Hereldar\Results\Tests;
 use Exception;
 use Hereldar\Results\Error;
 use Hereldar\Results\Ok;
+use Override;
 use Throwable;
 use UnexpectedValueException;
 
@@ -25,6 +26,7 @@ final class OkTest extends TestCase
     /** @var Error<null> */
     private Error $error;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

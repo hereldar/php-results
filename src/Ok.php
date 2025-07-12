@@ -6,6 +6,7 @@ namespace Hereldar\Results;
 
 use Closure;
 use Hereldar\Results\Interfaces\Resultlike;
+use Override;
 use Throwable;
 
 /**
@@ -68,6 +69,7 @@ final class Ok implements Resultlike
      * @psalm-suppress MixedReturnStatement
      * @psalm-suppress InvalidReturnStatement
      */
+    #[Override]
     public function andThen(self|Error|Closure $result): self|Error
     {
         if ($result instanceof Closure) {
@@ -77,6 +79,7 @@ final class Ok implements Resultlike
         return $result;
     }
 
+    #[Override]
     public function hasValue(): bool
     {
         return (null !== $this->value);
@@ -85,6 +88,7 @@ final class Ok implements Resultlike
     /**
      * @return false
      */
+    #[Override]
     public function isError(): bool
     {
         return false;
@@ -93,6 +97,7 @@ final class Ok implements Resultlike
     /**
      * @return true
      */
+    #[Override]
     public function isOk(): bool
     {
         return true;
@@ -103,6 +108,7 @@ final class Ok implements Resultlike
      *
      * @return $this
      */
+    #[Override]
     public function onFailure(Closure $action): static
     {
         return $this;
@@ -115,6 +121,7 @@ final class Ok implements Resultlike
      *
      * @psalm-suppress InvalidTemplateParam
      */
+    #[Override]
     public function onSuccess(Closure $action): static
     {
         $action($this->value);
@@ -129,6 +136,7 @@ final class Ok implements Resultlike
      *
      * @return T
      */
+    #[Override]
     public function or(mixed $value): mixed
     {
         return $this->value;
@@ -137,6 +145,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
+    #[Override]
     public function orDie(int|string|null $status = null): mixed
     {
         return $this->value;
@@ -152,6 +161,7 @@ final class Ok implements Resultlike
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
+    #[Override]
     public function orElse(self|Error|Closure $result): static
     {
         return $this;
@@ -160,6 +170,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
+    #[Override]
     public function orFail(): mixed
     {
         return $this->value;
@@ -168,6 +179,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
+    #[Override]
     public function orFalse(): mixed
     {
         return $this->value;
@@ -176,6 +188,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
+    #[Override]
     public function orNull(): mixed
     {
         return $this->value;
@@ -190,6 +203,7 @@ final class Ok implements Resultlike
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
+    #[Override]
     public function orThrow(Throwable|Closure $exception): mixed
     {
         return $this->value;
@@ -198,6 +212,7 @@ final class Ok implements Resultlike
     /**
      * @return T
      */
+    #[Override]
     public function value(): mixed
     {
         return $this->value;

@@ -8,6 +8,7 @@ use Exception;
 use Hereldar\Results\Error;
 use Hereldar\Results\Ok;
 use LogicException;
+use Override;
 use RuntimeException;
 use Throwable;
 use UnexpectedValueException;
@@ -30,6 +31,7 @@ final class ErrorTest extends TestCase
     /** @var Ok<null> */
     private Ok $ok;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
