@@ -6,6 +6,7 @@ namespace Hereldar\Results;
 
 use Closure;
 use Hereldar\Results\Interfaces\Resultlike;
+use Override;
 use RuntimeException;
 use Throwable;
 
@@ -63,11 +64,13 @@ final class Error implements Resultlike
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
+    #[Override]
     public function andThen(Ok|self|Closure $result): static
     {
         return $this;
     }
 
+    #[Override]
     public function hasValue(): bool
     {
         return (null !== $this->value);
@@ -76,6 +79,7 @@ final class Error implements Resultlike
     /**
      * @return true
      */
+    #[Override]
     public function isError(): bool
     {
         return true;
@@ -84,6 +88,7 @@ final class Error implements Resultlike
     /**
      * @return false
      */
+    #[Override]
     public function isOk(): bool
     {
         return false;
@@ -96,6 +101,7 @@ final class Error implements Resultlike
      *
      * @psalm-suppress InvalidTemplateParam
      */
+    #[Override]
     public function onFailure(Closure $action): static
     {
         $action($this->value);
@@ -108,6 +114,7 @@ final class Error implements Resultlike
      *
      * @return $this
      */
+    #[Override]
     public function onSuccess(Closure $action): static
     {
         return $this;
@@ -123,6 +130,7 @@ final class Error implements Resultlike
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
+    #[Override]
     public function or(mixed $value): mixed
     {
         if ($value instanceof Closure) {
@@ -132,6 +140,7 @@ final class Error implements Resultlike
         return $value;
     }
 
+    #[Override]
     public function orDie(int|string|null $status = null): never
     {
         if (null !== $status) {
@@ -157,6 +166,7 @@ final class Error implements Resultlike
      * @psalm-suppress MixedReturnStatement
      * @psalm-suppress InvalidReturnStatement
      */
+    #[Override]
     public function orElse(Ok|self|Closure $result): Ok|self
     {
         if ($result instanceof Closure) {
@@ -172,6 +182,7 @@ final class Error implements Resultlike
      *
      * @psalm-suppress UndefinedDocblockClass
      */
+    #[\Override]
     public function orFail(): never
     {
         if ($this->value instanceof Throwable) {
@@ -184,6 +195,7 @@ final class Error implements Resultlike
     /**
      * @return false
      */
+    #[Override]
     public function orFalse(): bool
     {
         return false;
@@ -194,6 +206,7 @@ final class Error implements Resultlike
      *
      * @psalm-suppress  InvalidReturnStatement
      */
+    #[Override]
     public function orNull(): mixed
     {
         return null;
@@ -210,6 +223,7 @@ final class Error implements Resultlike
      * @psalm-suppress UndefinedDocblockClass
      * @psalm-suppress InvalidTemplateParam
      */
+    #[Override]
     public function orThrow(Throwable|Closure $exception): never
     {
         if ($exception instanceof Closure) {
@@ -222,6 +236,7 @@ final class Error implements Resultlike
     /**
      * @return E
      */
+    #[Override]
     public function value(): mixed
     {
         return $this->value;
