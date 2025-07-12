@@ -15,7 +15,8 @@ coverage
 phpunit.xml
 
 # Docs
-cache
+/docs/.vitepress/dist
+/docs/.vitepress/cache
 
 # Others
 *.cache
